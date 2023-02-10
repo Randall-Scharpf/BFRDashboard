@@ -76,7 +76,7 @@
      <string notr="true">color: #CEF4FF;background-color:rgba(0,0,0,0);</string>
     </property>
     <property name="text">
-     <string>RPM</string>
+     <string>kRPM</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -101,10 +101,10 @@
      <string notr="true">color: #CEF4FF;background-color:rgba(0,0,0,0);</string>
     </property>
     <property name="text">
-     <string>Velocity</string>
+     <string>MPH</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="AFRLabel">
@@ -324,7 +324,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>36</height>
     </rect>
    </property>
   </widget>

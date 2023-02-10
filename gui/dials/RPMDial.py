@@ -16,7 +16,7 @@ class RPMDial(AnalogGaugeWidget):
         super().setFineScaleColor(QColor(139, 225, 242, 255))
         super().setDisplayValueColor(206, 244, 255, 255)
         super().setMinValue(0)
-        super().setMaxValue(28)
+        super().setMaxValue(14)
         super().setScalaCount(7)
         super().setScaleStartAngle(155)
         super().setTotalScaleAngleSize(230)
