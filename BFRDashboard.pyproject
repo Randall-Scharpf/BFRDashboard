@@ -1,3 +1,3 @@
 {
-    "files": ["gui/dials/VelocityDial.py","gui/main.ui","main.py","resources.py","gui/numdisplay/BorderBackgroundWidget.py","gui/numdisplay/BrakeDisplay.py","gui/gear/GearWidget.py","gui/numdisplay/CoolantDisplay.py","gui/numdisplay/ExhaustDisplay.py","gui/numdisplay/NumberDisplayWidget.py","gui/dials/RPMDial.py","gui/numdisplay/BatteryDisplay.py","gui/dials/AFRDial.py","gui/dials/AnalogGaugeWidget.py","gui/therm/ThermometerWidget.py","resources.qrc"]
+    "files": ["gui/therm/ThermometerWidget.py","gui/dials/VelocityDial.py","gui/numdisplay/CoolantDisplay.py","gui/dials/AFRDial.py","resources.py","gui/dials/RPMDial.py","gui/gear/GearWidget.py","gui/numdisplay/BatteryDisplay.py","gui/main.ui","gui/numdisplay/BrakeDisplay.py","resources.qrc","gui/numdisplay/ExhaustDisplay.py","gui/dials/AnalogGaugeWidget.py","main.py","gui/numdisplay/NumberDisplayWidget.py","gui/numdisplay/BorderBackgroundWidget.py","update.py"]
 }

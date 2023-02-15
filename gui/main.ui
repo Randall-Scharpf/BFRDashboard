@@ -208,9 +208,9 @@
    <widget class="QLabel" name="TimeLabel">
     <property name="geometry">
      <rect>
-      <x>830</x>
+      <x>699</x>
       <y>20</y>
-      <width>170</width>
+      <width>301</width>
       <height>30</height>
      </rect>
     </property>
@@ -218,7 +218,7 @@
      <string notr="true">color: white; font-size : 20pt; background-color : rgba(0, 0, 0, 0)</string>
     </property>
     <property name="text">
-     <string>2/8/23 10:17:20PM</string>
+     <string/>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -243,7 +243,7 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="CANStatusLabel">
+   <widget class="QLabel" name="CANConnectionLabel">
     <property name="geometry">
      <rect>
       <x>840</x>
@@ -262,7 +262,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="Label">
+   <widget class="QLabel" name="CANStatusLabel">
     <property name="geometry">
      <rect>
       <x>840</x>
@@ -314,8 +314,8 @@
    <zorder>RightNumBox</zorder>
    <zorder>TimeLabel</zorder>
    <zorder>LogLabel</zorder>
+   <zorder>CANConnectionLabel</zorder>
    <zorder>CANStatusLabel</zorder>
-   <zorder>Label</zorder>
    <zorder>BFRIcon</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
