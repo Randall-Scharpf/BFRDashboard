@@ -10,7 +10,7 @@ from PyQt5.QtCore import Qt, QFile, QTimer, QDateTime, QRunnable, QThreadPool
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self)
-        # self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.FramelessWindowHint)
         main_ui = QFile(":/res/main_ui")
         main_ui.open(QFile.ReadOnly)
         # run this command: pyrcc5 resources.qrc -o resources.py to package main_ui
@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         timer.timeout.connect(update.on_update_labels)
         timer.start(update.ms_per_update)
         self.show()
-        # self.showMaximized()  # 1470 920
+        self.showFullScreen()  # 1470 920 for my mac
         print("Current screen width: " + str(self.frameGeometry().width()) + ", height: " + str(self.frameGeometry().height()))
 
 

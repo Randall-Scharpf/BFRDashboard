@@ -30,10 +30,10 @@ def on_update_labels():
         if elapsed_update_time > ELAPSED_UPDATE_MAX:
             elapsed_update_time = ELAPSED_UPDATE_MAX
         main_win.CANConnectionLabel.setText("No Connection (" + str(int(elapsed_update_time / 1000)) + ")")
-        main_win.CANStatusLabel.setStyleSheet("color: red; font-size : 20pt; background-color : rgba(0, 0, 0, 0)")
+        main_win.CANStatusLabel.setStyleSheet("color: red; font-size : 25px; background-color : rgba(0, 0, 0, 0)")
     else:
         main_win.CANConnectionLabel.setText("Connected")
-        main_win.CANStatusLabel.setStyleSheet("color: green; font-size : 20pt; background-color : rgba(0, 0, 0, 0)")
+        main_win.CANStatusLabel.setStyleSheet("color: green; font-size : 25px; background-color : rgba(0, 0, 0, 0)")
 
 def on_update_data():
     global elasped_update_time

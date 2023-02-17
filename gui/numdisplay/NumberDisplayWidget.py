@@ -4,7 +4,9 @@ from PyQt5.QtCore import Qt
 
 
 # widget's width = 140, height = 150
-icon_size = 40
+WIDTH = 180
+HEIGHT = 165
+icon_size = 50
 
 
 class NumberDisplayWidget(QWidget):
@@ -17,29 +19,29 @@ class NumberDisplayWidget(QWidget):
         icon.setPixmap(pixmap)
         icon.setStyleSheet("background-color : rgba(0, 0, 0, 0);")
         if flipped:
-            icon.setGeometry(20, 70, icon_size, icon_size)
+            icon.setGeometry(24, 84, icon_size, icon_size)
         else:
-            icon.setGeometry(95, 70, icon_size, icon_size)
+            icon.setGeometry(114, 84, icon_size, icon_size)
 
         self.numberLabel = QLabel(self)
         self.numberLabel.setText("N")
-        self.numberLabel.setStyleSheet("color: white; font-size : 80pt; background-color : rgba(0, 0, 0, 0);")
+        self.numberLabel.setStyleSheet("color: white; font-size : 96px; background-color : rgba(0, 0, 0, 0);")
         if flipped:
-            self.numberLabel.setGeometry(50, 10, 100, 140)
+            self.numberLabel.setGeometry(60, 12, 120, 168)
         else:
-            self.numberLabel.setGeometry(5, 10, 100, 140)
+            self.numberLabel.setGeometry(6, 12, 120, 168)
         self.numberLabel.setAlignment(Qt.AlignCenter)
 
         self.unitLabel = QLabel(self)
         self.unitLabel.setText(unit)
-        self.unitLabel.setStyleSheet("color: white; font-size : 40pt; background-color : rgba(0, 0, 0, 0);")
+        self.unitLabel.setStyleSheet("color: white; font-size : 50px; background-color : rgba(0, 0, 0, 0);")
         if flipped:
-            self.unitLabel.setGeometry(20, 30, 40, 40)
+            self.unitLabel.setGeometry(24, 36, 48, 48)
         else:
-            self.unitLabel.setGeometry(95, 30, 40, 40)
+            self.unitLabel.setGeometry(114, 36, 48, 48)
         self.unitLabel.setAlignment(Qt.AlignCenter)
 
     def _setNumberColor(self, r, g, b):
         color_str = "rgba(" + str(r) + "," + str(g) + "," + str(b) + ",255)"
-        self.unitLabel.setStyleSheet("color: " + color_str + "; font-size : 40pt; background-color : rgba(0, 0, 0, 0);")
-        self.numberLabel.setStyleSheet("color: " + color_str + "; font-size : 80pt; background-color : rgba(0, 0, 0, 0);")
+        self.unitLabel.setStyleSheet("color: " + color_str + "; font-size : 50px; background-color : rgba(0, 0, 0, 0);")
+        self.numberLabel.setStyleSheet("color: " + color_str + "; font-size : 96px; background-color : rgba(0, 0, 0, 0);")

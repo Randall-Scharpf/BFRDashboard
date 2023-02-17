@@ -5,8 +5,8 @@ from PyQt5.QtCore import Qt, QRectF
 
 border_color = QColor(182, 182, 182, 255)
 border_width = 5
-width = 150
-height = 280
+width = 180
+height = 330
 
 
 class BorderBackgroundWidget(QWidget):
