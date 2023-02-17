@@ -1,3 +1,4 @@
+import globalfonts
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QRectF
@@ -12,13 +13,13 @@ class GearWidget(QWidget):
 
         label = QLabel(self)
         label.setText("GEAR")
-        label.setStyleSheet("color: white; font-size : 50px; background-color : rgba(0, 0, 0, 0);")
+        label.setStyleSheet("color: white; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(50))
         label.setGeometry(0, 40, WIDTH, 40)
         label.setAlignment(Qt.AlignCenter)
 
         self.gear = QLabel(self)
         self.gear.setText("N")
-        self.gear.setStyleSheet("color: white; font-size : 250px; background-color : rgba(0, 0, 0, 0);")
+        self.gear.setStyleSheet("color: white; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(250))
         self.gear.setGeometry(0, 100, WIDTH, 200)
         self.gear.setAlignment(Qt.AlignCenter)
 

@@ -1,3 +1,4 @@
+import globalfonts
 from gui.dials.AnalogGaugeWidget import AnalogGaugeWidget
 from PyQt5.QtGui import QColor
 
@@ -23,5 +24,5 @@ class VelocityDial(AnalogGaugeWidget):
         super().setEnableValueText(True)
         super().setEnableCenterPoint(True)
         self.units = ""
-        self.initial_scale_fontsize = 25
-        self.initial_value_fontsize = 48
+        self.initial_scale_fontsize = globalfonts.scaled_dial_size(25)
+        self.initial_value_fontsize = globalfonts.scaled_dial_size(48)

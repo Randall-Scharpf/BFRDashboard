@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QLabel
+import globalfonts
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
@@ -25,7 +26,7 @@ class NumberDisplayWidget(QWidget):
 
         self.numberLabel = QLabel(self)
         self.numberLabel.setText("N")
-        self.numberLabel.setStyleSheet("color: white; font-size : 96px; background-color : rgba(0, 0, 0, 0);")
+        self.numberLabel.setStyleSheet("color: white; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(96))
         if flipped:
             self.numberLabel.setGeometry(60, 12, 120, 168)
         else:
@@ -34,7 +35,7 @@ class NumberDisplayWidget(QWidget):
 
         self.unitLabel = QLabel(self)
         self.unitLabel.setText(unit)
-        self.unitLabel.setStyleSheet("color: white; font-size : 50px; background-color : rgba(0, 0, 0, 0);")
+        self.unitLabel.setStyleSheet("color: white; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(50))
         if flipped:
             self.unitLabel.setGeometry(24, 36, 48, 48)
         else:
@@ -43,5 +44,5 @@ class NumberDisplayWidget(QWidget):
 
     def _setNumberColor(self, r, g, b):
         color_str = "rgba(" + str(r) + "," + str(g) + "," + str(b) + ",255)"
-        self.unitLabel.setStyleSheet("color: " + color_str + "; font-size : 50px; background-color : rgba(0, 0, 0, 0);")
-        self.numberLabel.setStyleSheet("color: " + color_str + "; font-size : 96px; background-color : rgba(0, 0, 0, 0);")
+        self.unitLabel.setStyleSheet("color: " + color_str + "; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(50))
+        self.numberLabel.setStyleSheet("color: " + color_str + "; background-color : rgba(0, 0, 0, 0);" +  + globalfonts.scaled_css_size(96))

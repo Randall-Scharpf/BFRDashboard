@@ -2,9 +2,10 @@
 import sys
 import resources  # https://www.pythonguis.com/tutorials/qresource-system/
 import update
+import globalfonts
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtCore import Qt, QFile, QTimer, QDateTime, QRunnable, QThreadPool
+from PyQt5.QtCore import Qt, QFile, QTimer, QDateTime, QRunnable, QThreadPool, QCoreApplication
 
 
 class MainWindow(QMainWindow):
@@ -18,6 +19,8 @@ class MainWindow(QMainWindow):
         uic.loadUi("gui/main.ui", self)
         print(self.RPMDial.units)
 
+        globalfonts.scale_size_for_all(self)
+
         update.main_win = self
         update.ms_per_update = 10
         timer = QTimer(self)
@@ -30,6 +33,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     QApplication.setStyle("fusion")
+    QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     app = QApplication([])
     window = MainWindow()
     sys.exit(app.exec_())
