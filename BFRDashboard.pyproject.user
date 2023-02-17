@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 5.0.3, 2023-02-09T12:53:18. -->
+<!-- Written by QtCreator 5.0.3, 2023-02-16T19:35:42. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -217,6 +217,42 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/jasonliu/BFRDashboard</value>
    </valuemap>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.14">
+    <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
+    <valuelist type="QVariantList" key="CustomOutputParsers"/>
+    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
+    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/update.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/update.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/update.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{2ede29fe-8673-4aa0-b137-ea0bb460b862}</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/update.py</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/jasonliu/BFRDashboard</value>
+   </valuemap>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.15">
+    <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
+    <valuelist type="QVariantList" key="CustomOutputParsers"/>
+    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
+    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/receive.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/receive.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/receive.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{26dc608e-5b0a-492b-bbbc-c56d92dbfede}</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/receive.py</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/jasonliu/BFRDashboard</value>
+   </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.2">
     <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
     <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
@@ -361,7 +397,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/jasonliu/BFRDashboard/gui/numdisplay</value>
    </valuemap>
-   <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">14</value>
+   <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">16</value>
   </valuemap>
  </data>
  <data>
