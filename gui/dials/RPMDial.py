@@ -24,5 +24,5 @@ class RPMDial(AnalogGaugeWidget):
         super().setEnableValueText(True)
         super().setEnableCenterPoint(True)
         self.units = ""
-        self.initial_scale_fontsize = globalfonts.scaled_dial_size(32)
-        self.initial_value_fontsize = globalfonts.scaled_dial_size(55)
+        self.initial_scale_fontsize = globalfonts.scaled_dial_size(35)
+        self.initial_value_fontsize = globalfonts.scaled_dial_size(60)

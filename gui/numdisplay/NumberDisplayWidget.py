@@ -18,7 +18,7 @@ class NumberDisplayWidget(QWidget):
         pixmap = pixmap.scaledToWidth(icon_size)
         icon = QLabel(self)
         icon.setPixmap(pixmap)
-        icon.setStyleSheet("background-color : rgba(0, 0, 0, 0);")
+        icon.setStyleSheet(globalfonts.TRANSPARENT_CSS)
         if flipped:
             icon.setGeometry(24, 84, icon_size, icon_size)
         else:
@@ -26,16 +26,16 @@ class NumberDisplayWidget(QWidget):
 
         self.numberLabel = QLabel(self)
         self.numberLabel.setText("N")
-        self.numberLabel.setStyleSheet("color: white; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(96))
+        self.numberLabel.setStyleSheet(globalfonts.FONT_CSS + globalfonts.WHITE_CSS + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(96))
         if flipped:
-            self.numberLabel.setGeometry(60, 12, 120, 168)
+            self.numberLabel.setGeometry(60, 0, 120, 168)
         else:
-            self.numberLabel.setGeometry(6, 12, 120, 168)
+            self.numberLabel.setGeometry(6, 0, 120, 168)
         self.numberLabel.setAlignment(Qt.AlignCenter)
 
         self.unitLabel = QLabel(self)
         self.unitLabel.setText(unit)
-        self.unitLabel.setStyleSheet("color: white; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(50))
+        self.unitLabel.setStyleSheet(globalfonts.FONT_CSS + globalfonts.WHITE_CSS + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(50))
         if flipped:
             self.unitLabel.setGeometry(24, 36, 48, 48)
         else:
@@ -44,5 +44,5 @@ class NumberDisplayWidget(QWidget):
 
     def _setNumberColor(self, r, g, b):
         color_str = "rgba(" + str(r) + "," + str(g) + "," + str(b) + ",255)"
-        self.unitLabel.setStyleSheet("color: " + color_str + "; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(50))
-        self.numberLabel.setStyleSheet("color: " + color_str + "; background-color : rgba(0, 0, 0, 0);" +  + globalfonts.scaled_css_size(96))
+        self.unitLabel.setStyleSheet(globalfonts.FONT_CSS + "color: " + color_str + "; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(50))
+        self.numberLabel.setStyleSheet(globalfonts.FONT_CSS + "color: " + color_str + "; background-color : rgba(0, 0, 0, 0);" +  + globalfonts.scaled_css_size(96))

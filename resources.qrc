@@ -6,5 +6,6 @@
         <file alias="coolant">gui/resources/coolant.png</file>
         <file alias="exhaust">gui/resources/exhaust.png</file>
         <file alias="main_ui">gui/main.ui</file>
+        <file alias="ubuntu">gui/resources/Ubuntu-Regular.ttf</file>
     </qresource>
 </RCC>

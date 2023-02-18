@@ -13,14 +13,14 @@ class GearWidget(QWidget):
 
         label = QLabel(self)
         label.setText("GEAR")
-        label.setStyleSheet("color: white; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(50))
+        label.setStyleSheet(globalfonts.FONT_CSS + globalfonts.WHITE_CSS + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(50))
         label.setGeometry(0, 40, WIDTH, 40)
         label.setAlignment(Qt.AlignCenter)
 
         self.gear = QLabel(self)
         self.gear.setText("N")
-        self.gear.setStyleSheet("color: white; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(250))
-        self.gear.setGeometry(0, 100, WIDTH, 200)
+        self.gear.setStyleSheet(globalfonts.FONT_CSS + globalfonts.WHITE_CSS + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(250))
+        self.gear.setGeometry(0, 85, WIDTH, 200)
         self.gear.setAlignment(Qt.AlignCenter)
 
     def paintEvent(self, e):

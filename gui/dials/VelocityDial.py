@@ -25,4 +25,4 @@ class VelocityDial(AnalogGaugeWidget):
         super().setEnableCenterPoint(True)
         self.units = ""
         self.initial_scale_fontsize = globalfonts.scaled_dial_size(25)
-        self.initial_value_fontsize = globalfonts.scaled_dial_size(48)
+        self.initial_value_fontsize = globalfonts.scaled_dial_size(50)

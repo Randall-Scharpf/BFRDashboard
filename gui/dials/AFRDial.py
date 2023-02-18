@@ -24,5 +24,6 @@ class AFRDial(AnalogGaugeWidget):
         super().setEnableValueText(True)
         super().setEnableCenterPoint(True)
         self.units = ""
-        self.initial_scale_fontsize = globalfonts.scaled_dial_size(25)
-        self.initial_value_fontsize = globalfonts.scaled_dial_size(52)
+        self.initial_scale_fontsize = globalfonts.scaled_dial_size(28)
+        self.initial_value_fontsize = globalfonts.scaled_dial_size(55)
+        self.setScaleFontFamily("Ubuntu")

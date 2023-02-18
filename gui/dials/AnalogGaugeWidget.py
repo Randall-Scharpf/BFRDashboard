@@ -21,6 +21,7 @@
 import os
 import sys
 import math
+import globalfonts  # my modification
 
 try:
     from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication
@@ -140,8 +141,9 @@ class AnalogGaugeWidget(QWidget):
         ################################################################################################
         # LOAD CUSTOM FONT
         ################################################################################################
-        QFontDatabase.addApplicationFont(os.path.join(os.path.dirname(
-            __file__), 'fonts/Orbitron/Orbitron-VariableFont_wght.ttf'))
+        id = QFontDatabase.addApplicationFont(':/res/ubuntu')  # jason: import Ubuntu font
+        if id < 0: print("[AnalogGaugeWidget] Could not import Ubuntu font from resources")
+        families = QFontDatabase.applicationFontFamilies(id)
 
         ################################################################################################
         # DEFAULT POLYGON COLOR
@@ -162,7 +164,7 @@ class AnalogGaugeWidget(QWidget):
         # DEFAULT SCALE TEXT STATUS
         ################################################################################################
         self.setEnableScaleText(True)
-        self.scale_fontname = "Orbitron"
+        self.scale_fontname = families[0]  # jason: use our own font
         self.initial_scale_fontsize = 14
         self.scale_fontsize = self.initial_scale_fontsize
 
@@ -170,7 +172,7 @@ class AnalogGaugeWidget(QWidget):
         # DEFAULT VALUE TEXT STATUS
         ################################################################################################
         self.enable_value_text = True
-        self.value_fontname = "Orbitron"
+        self.value_fontname = families[0]
         self.initial_value_fontsize = 40
         self.value_fontsize = self.initial_value_fontsize
         self.text_radius_factor = 0.5
