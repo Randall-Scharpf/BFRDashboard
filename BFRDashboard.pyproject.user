@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 5.0.3, 2023-02-17T14:21:16. -->
+<!-- Written by QtCreator 5.0.3, 2023-02-18T15:37:28. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -281,6 +281,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/globalfonts.py</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{92d20874-b3e7-4d1b-864f-e66b0d3a3ff9}</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
