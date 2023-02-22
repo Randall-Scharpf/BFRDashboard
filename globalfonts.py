@@ -1,6 +1,14 @@
-SCALE = 1.0  # 1.0
-DIAL_SCALE = 1.0  # 0.85
-FONT_CSS = "font-family: Ubuntu;"
+# constants
+# raspberry pi's OS has different-looking fonts than MacOS or Windows
+# a scalar applied to the font size of every non-dial widget
+# 1.0 looks decently on raspberry pi
+SCALE = 1.0
+# a scalar applied to the font size of every dial widget
+# 1.0 looks decently on raspberry pi
+DIAL_SCALE = 1.0
+
+# helper constants to prevent typos
+FONT_CSS = "font-family: Ubuntu;"  # ben's favorite font
 WHITE_CSS = "color: white;"
 TRANSPARENT_CSS = "background-color : rgba(0, 0, 0, 0);"
 

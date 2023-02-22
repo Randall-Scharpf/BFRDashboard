@@ -11,7 +11,7 @@ from datetime import datetime
 from receive import Receive
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtCore import Qt, QFile, QTimer, QRunnable, QThreadPool, QCoreApplication, pyqtSignal
+from PyQt5.QtCore import Qt, QFile, QTimer, QThreadPool, QCoreApplication
 
 
 dt_string = datetime.now().strftime("%m-%d-%Y %H:%M:%S")
@@ -25,10 +25,12 @@ logger.setLevel(logging.INFO)
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
+        # initialize
         logging.info('Initializing Main Window')
         QMainWindow.__init__(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
 
+        # load UI
         logging.info('Loading UI to Main Window')
         '''
         To load UI from resource.py, write:
@@ -40,9 +42,11 @@ class MainWindow(QMainWindow):
         '''
         uic.loadUi("gui/main.ui", self)
 
+        # scale widgets
         logging.info('Callig globalfonts to scale widgets\' fonts')
         globalfonts.scale_size_for_all(self)
 
+        # launch timer
         logging.info('Initializing and launching timer')
         # initialize parameters for timer
         timer.main_win = self
@@ -52,6 +56,7 @@ class MainWindow(QMainWindow):
         qtimer.timeout.connect(timer.on_update_labels)
         qtimer.start(timer.MS_PER_UPDATE)
 
+        # launch receive
         logging.info('Initializing and launching receive thread')
         logging.debug('QThreadPool max thread count is ' +
                       str(QThreadPool.globalInstance().maxThreadCount()))
@@ -60,6 +65,7 @@ class MainWindow(QMainWindow):
         self.ExitLabel.exit.connect(self.receive_thread.stop)
         pool.start(self.receive_thread)
 
+        # show self
         logging.info('Showing main window')
         # change to self.show() if your computer's resolution is not 1280x720
         self.showFullScreen()
@@ -70,6 +76,7 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    # idk what these two lines really do but let's leave them there
     QApplication.setStyle("fusion")
     QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     app = QApplication([])
