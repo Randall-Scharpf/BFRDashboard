@@ -1,5 +1,5 @@
 # Bruin Formula Racing Dashboard
-###
-written by Guo (Jason) Liu
+Written by Guo (Jason) Liu 2022-2023
+Email liug22@hotmail.com for suggestions
  
-## How to set up on Raspberry Pi
+### How to set up on Raspberry Pi
