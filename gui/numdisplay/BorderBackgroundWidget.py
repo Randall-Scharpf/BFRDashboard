@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt, QRectF
 
 border_color = QColor(182, 182, 182, 255)
 border_width = 5
-width = 180
+width = 240
 height = 330
 
 

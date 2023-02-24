@@ -68,7 +68,7 @@ class MainWindow(QMainWindow):
         # show self
         logging.info('Showing main window')
         # change to self.show() if your computer's resolution is not 1280x720
-        self.showFullScreen()
+        self.show()
         logging.debug("Current screen width: " + str(self.frameGeometry().width()) +
                       ", height: " + str(self.frameGeometry().height()))
 

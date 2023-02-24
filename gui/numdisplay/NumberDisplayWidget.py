@@ -4,13 +4,17 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
 
-# widget's width = 140, height = 150
-WIDTH = 180
+WIDTH = 240
 HEIGHT = 165
 icon_size = 50
 
+DIGIT_TO_FONTSIZE = {1 : 126, 2 : 106, 3 : 85, 4: 70}
+
 
 class NumberDisplayWidget(QWidget):
+    fontsize_css = globalfonts.scaled_css_size(96)
+    color_css = globalfonts.WHITE_CSS
+
     def __init__(self, icon_filepath, unit, flipped, parent=None):
         super(NumberDisplayWidget, self).__init__(parent)
 
@@ -22,16 +26,16 @@ class NumberDisplayWidget(QWidget):
         if flipped:
             icon.setGeometry(24, 84, icon_size, icon_size)
         else:
-            icon.setGeometry(114, 84, icon_size, icon_size)
+            icon.setGeometry(174, 84, icon_size, icon_size)
 
         self.numberLabel = QLabel(self)
         self.numberLabel.setText("N")
-        self.numberLabel.setStyleSheet(globalfonts.FONT_CSS + globalfonts.WHITE_CSS + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(96))
         if flipped:
-            self.numberLabel.setGeometry(60, 0, 120, 168)
+            self.numberLabel.setGeometry(65, 0, 180, 168)
         else:
-            self.numberLabel.setGeometry(6, 0, 120, 168)
+            self.numberLabel.setGeometry(6, 0, 180, 168)
         self.numberLabel.setAlignment(Qt.AlignCenter)
+        self._repaint_font()
 
         self.unitLabel = QLabel(self)
         self.unitLabel.setText(unit)
@@ -39,10 +43,23 @@ class NumberDisplayWidget(QWidget):
         if flipped:
             self.unitLabel.setGeometry(24, 36, 48, 48)
         else:
-            self.unitLabel.setGeometry(114, 36, 48, 48)
+            self.unitLabel.setGeometry(174, 36, 48, 48)
         self.unitLabel.setAlignment(Qt.AlignCenter)
 
     def _setNumberColor(self, r, g, b):
         color_str = "rgba(" + str(r) + "," + str(g) + "," + str(b) + ",255)"
-        self.unitLabel.setStyleSheet(globalfonts.FONT_CSS + "color: " + color_str + "; background-color : rgba(0, 0, 0, 0);" + globalfonts.scaled_css_size(50))
-        self.numberLabel.setStyleSheet(globalfonts.FONT_CSS + "color: " + color_str + "; background-color : rgba(0, 0, 0, 0);" +  + globalfonts.scaled_css_size(96))
+        self.color_css = "color: " + color_str + ";"
+        self._repaint_font()
+
+    def setNumber(self, num):
+        num = int(num)
+        num_len = len(str(num))
+        if (num_len < 1 or num_len > 4):
+            self.fontsize_css = globalfonts.scaled_css_size(DIGIT_TO_FONTSIZE[4])
+        else:
+            self.fontsize_css = globalfonts.scaled_css_size(DIGIT_TO_FONTSIZE[num_len])
+        self.numberLabel.setText(str(num))
+        self._repaint_font()
+
+    def _repaint_font(self):
+        self.numberLabel.setStyleSheet(globalfonts.FONT_CSS + globalfonts.TRANSPARENT_CSS + self.color_css + self.fontsize_css)
