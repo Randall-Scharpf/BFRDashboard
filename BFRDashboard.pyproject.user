@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 5.0.3, 2023-02-22T00:46:55. -->
+<!-- Written by QtCreator 5.0.3, 2023-02-23T21:13:58. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -263,6 +263,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/timer.py</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/timer.py</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/timer.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{35eaf1b3-27cd-401e-981c-6703f8515991}</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/timer.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>

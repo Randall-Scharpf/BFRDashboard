@@ -46,12 +46,12 @@ class NumberDisplayWidget(QWidget):
             self.unitLabel.setGeometry(174, 36, 48, 48)
         self.unitLabel.setAlignment(Qt.AlignCenter)
 
-    def _setNumberColor(self, r, g, b):
+    def _set_number_color(self, r, g, b):
         color_str = "rgba(" + str(r) + "," + str(g) + "," + str(b) + ",255)"
         self.color_css = "color: " + color_str + ";"
         self._repaint_font()
 
-    def setNumber(self, num):
+    def set_number(self, num):
         num = int(num)
         num_len = len(str(num))
         if (num_len < 1 or num_len > 4):
