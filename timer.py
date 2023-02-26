@@ -22,7 +22,7 @@ def on_update_labels():
     # update Time Label every whole second
     if elapsed_ms > 1000:
         time = QDateTime.currentDateTime()
-        time_display = time.toString('yy/MM/dd h:mm:ss AP dddd')
+        time_display = time.toString('MM/dd/yy h:mm:ss AP dddd')
         main_win.TimeLabel.setText(time_display)
         elapsed_ms -= 1000
 
