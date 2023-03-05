@@ -5,7 +5,7 @@ from PyQt5.QtGui import QColor
 
 class AFRDial(AnalogGaugeWidget):
     def __init__(self, parent=None):
-        super().__init__(parent, True)
+        super().__init__(parent, True, True)
         super().setCustomGaugeTheme(
             color1="#242321",  # gray, end color, outer color
             color2="#5e5e5e",  # a lighter gray, just a shine

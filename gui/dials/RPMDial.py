@@ -5,7 +5,7 @@ from PyQt5.QtGui import QColor
 
 class RPMDial(AnalogGaugeWidget):
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent, True)
         super().setCustomGaugeTheme(
             color1="#242321",  # gray, end color, outer color
             color2="#969696",  # a lighter gray, just a shine

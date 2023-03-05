@@ -47,14 +47,15 @@ class AnalogGaugeWidget(QWidget):
     """
     valueChanged = pyqtSignal(int)
 
-    def __init__(self, parent=None, allow_floats=False):
+    def __init__(self, parent=None, allow_floats=False, scale_floats=False):
         super(AnalogGaugeWidget, self).__init__(parent)
         self.allow_floats = allow_floats
+        self.scale_floats = scale_floats
 
         ################################################################################################
         # DEFAULT TIMER VALUE
         ################################################################################################
-        self.use_timer_event = False
+        self.use_timer_event = True  # jason: False->True, calling self.update in another thread results in weird crashes
 
         ################################################################################################
         # DEFAULT NEEDLE COLOR
@@ -224,7 +225,7 @@ class AnalogGaugeWidget(QWidget):
         if self.use_timer_event:
             timer = QTimer(self)
             timer.timeout.connect(self.update)
-            timer.start(10)
+            timer.start(10)  # jason: 10 is good amount
         else:
             self.update()
 
@@ -792,7 +793,7 @@ class AnalogGaugeWidget(QWidget):
         elif value >= self.maxValue:
             self.value = self.maxValue
         else:
-            self.value = value
+            self.value = round(value, 1)
         # self.paintEvent("")
         if self.allow_floats:  # jason: int to float
             self.valueChanged.emit(float(value))
@@ -1202,7 +1203,7 @@ class AnalogGaugeWidget(QWidget):
                           float(self.scalaCount))
         for i in range(self.scalaCount + 1):
             # text = str(int((self.maxValue - self.minValue) / self.scalaCount * i))
-            if self.allow_floats:  # jason: int to float
+            if self.scale_floats:  # jason: int to float
                 text = str(float(self.minValue + scale_per_div * i))
             else:
                 text = str(int(self.minValue + scale_per_div * i))

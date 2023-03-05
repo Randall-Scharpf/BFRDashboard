@@ -4,7 +4,7 @@ from PyQt5.QtCore import QDateTime
 
 
 # constants
-MS_PER_UPDATE = 10
+MS_PER_UPDATE = 10 # 100 for RP
 ELAPSED_UPDATE_TOLERANCE = 1000
 ELAPSED_UPDATE_MAX = 99 * 1000
 # to be initialized before calling on_update_labels
@@ -38,6 +38,6 @@ def on_update_labels():
         main_win.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + "color: green;"  + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
 
 
-def on_update_data():
+def on_receive_data():
     global elasped_update_time
-    elapsed_update_time = 0
+    elasped_update_time = 0

@@ -22,6 +22,8 @@ logger = logging.getLogger()
 # change to logging.INFO to decrease number of logs
 logger.setLevel(logging.INFO)
 
+window = None
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -48,7 +50,6 @@ class MainWindow(QMainWindow):
 
         # launch timer
         logging.info('Initializing and launching timer')
-        # initialize parameters for timer
         timer.main_win = self
         logging.debug('Timer times out every ' + str(timer.MS_PER_UPDATE) + 'ms')
         # launch timer to call infinitely
@@ -61,7 +62,7 @@ class MainWindow(QMainWindow):
         logging.debug('QThreadPool max thread count is ' +
                       str(QThreadPool.globalInstance().maxThreadCount()))
         pool = QThreadPool.globalInstance()
-        self.receive_thread = Receive()
+        self.receive_thread = Receive(self)
         self.ExitLabel.exit.connect(self.receive_thread.stop)
         pool.start(self.receive_thread)
 
