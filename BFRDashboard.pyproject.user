@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 5.0.3, 2023-02-23T21:13:58. -->
+<!-- Written by QtCreator 5.0.3, 2023-03-07T22:19:05. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -242,11 +242,11 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/globalfonts.py</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{92d20874-b3e7-4d1b-864f-e66b0d3a3ff9}</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/timer.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/timer.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/timer.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{35eaf1b3-27cd-401e-981c-6703f8515991}</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/timer.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
@@ -260,11 +260,10 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/timer.py</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/timer.py</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/timer.py</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{35eaf1b3-27cd-401e-981c-6703f8515991}</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/timer.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/globalfonts.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/globalfonts.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>

@@ -1,7 +1,10 @@
 import globalfonts
 from gui.dials.AnalogGaugeWidget import AnalogGaugeWidget
 from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
+MAX_RPM = 14
+MAX_BLUR_RADIUS = 400
 
 class RPMDial(AnalogGaugeWidget):
     def __init__(self, parent=None):
@@ -17,7 +20,7 @@ class RPMDial(AnalogGaugeWidget):
         super().setFineScaleColor(QColor(139, 225, 242, 255))
         super().setDisplayValueColor(206, 244, 255, 255)
         super().setMinValue(0)
-        super().setMaxValue(14)
+        super().setMaxValue(MAX_RPM)
         super().setScalaCount(7)
         super().setScaleStartAngle(155)
         super().setTotalScaleAngleSize(230)
@@ -26,3 +29,11 @@ class RPMDial(AnalogGaugeWidget):
         self.units = ""
         self.initial_scale_fontsize = globalfonts.scaled_dial_size(35)
         self.initial_value_fontsize = globalfonts.scaled_dial_size(60)
+
+        self.effect = QGraphicsDropShadowEffect(self)
+        self.effect.setOffset(0, 0)
+        self.effect.setColor(QColor(139, 225, 242, 255))
+        self.setGraphicsEffect(self.effect)
+
+    def set_blur_effect(self, blur_ratio):
+        self.effect.setBlurRadius(blur_ratio * MAX_BLUR_RADIUS)

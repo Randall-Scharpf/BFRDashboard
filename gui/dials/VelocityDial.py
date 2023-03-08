@@ -1,7 +1,10 @@
 import globalfonts
 from gui.dials.AnalogGaugeWidget import AnalogGaugeWidget
 from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect
 
+
+MAX_BLUR_RADIUS = 300
 
 class VelocityDial(AnalogGaugeWidget):
     def __init__(self, parent=None):
@@ -26,3 +29,11 @@ class VelocityDial(AnalogGaugeWidget):
         self.units = ""
         self.initial_scale_fontsize = globalfonts.scaled_dial_size(25)
         self.initial_value_fontsize = globalfonts.scaled_dial_size(50)
+
+        self.effect = QGraphicsDropShadowEffect(self)
+        self.effect.setOffset(0, 0)
+        self.effect.setColor(QColor(139, 225, 242, 255))
+        self.setGraphicsEffect(self.effect)
+
+    def set_blur_effect(self, blur_ratio):
+        self.effect.setBlurRadius(blur_ratio * MAX_BLUR_RADIUS)

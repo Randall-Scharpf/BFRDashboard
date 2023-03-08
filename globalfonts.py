@@ -1,10 +1,8 @@
 # constants
 # raspberry pi's OS has different-looking fonts than MacOS or Windows
 # a scalar applied to the font size of every non-dial widget
-# 1.0 looks decently on raspberry pi
 SCALE = 1.0
 # a scalar applied to the font size of every dial widget
-# 1.0 looks decently on raspberry pi
 DIAL_SCALE = 1.0
 
 # helper constants to prevent typos

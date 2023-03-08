@@ -225,7 +225,7 @@
      <string notr="true">color: white; font-size : 25px; background-color : rgba(0, 0, 0, 0)</string>
     </property>
     <property name="text">
-     <string>Log: 3</string>
+     <string>Log: N</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

@@ -239,6 +239,9 @@ class AnalogGaugeWidget(QWidget):
         ################################################################################################
         self.rescale_method()
 
+    def getValue(self):
+        return self.value
+
     ################################################################################################
     # SET SCALE FONT FAMILY
     ################################################################################################
@@ -793,7 +796,7 @@ class AnalogGaugeWidget(QWidget):
         elif value >= self.maxValue:
             self.value = self.maxValue
         else:
-            self.value = round(value, 1)
+            self.value = value
         # self.paintEvent("")
         if self.allow_floats:  # jason: int to float
             self.valueChanged.emit(float(value))
@@ -1269,7 +1272,7 @@ class AnalogGaugeWidget(QWidget):
         # angle_distance = (float(self.scale_angle_size) / float(self.scalaCount))
         # for i in range(self.scalaCount + 1):
         if self.allow_floats:  # jason: int to float
-            text = str(float(self.value))
+            text = str(round(float(self.value), 1))
         else:
             text = str(int(self.value))
         w = fm.width(text) + 1

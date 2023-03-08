@@ -14,6 +14,7 @@ DIGIT_TO_FONTSIZE = {1 : 126, 2 : 106, 3 : 85, 4: 70}
 class NumberDisplayWidget(QWidget):
     fontsize_css = globalfonts.scaled_css_size(96)
     color_css = globalfonts.WHITE_CSS
+    prev_num_digits = 1
 
     def __init__(self, icon_filepath, unit, flipped, parent=None):
         super(NumberDisplayWidget, self).__init__(parent)
@@ -59,7 +60,9 @@ class NumberDisplayWidget(QWidget):
         else:
             self.fontsize_css = globalfonts.scaled_css_size(DIGIT_TO_FONTSIZE[num_len])
         self.numberLabel.setText(str(num))
-        self._repaint_font()
+        if not self.prev_num_digits == num_len:
+            self._repaint_font()
+        prev_num_digits = num_len
 
     def _repaint_font(self):
         self.numberLabel.setStyleSheet(globalfonts.FONT_CSS + globalfonts.TRANSPARENT_CSS + self.color_css + self.fontsize_css)
