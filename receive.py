@@ -33,7 +33,7 @@ class Receive(QRunnable):
         while self.keep_running: # networ
             if PROCESS_FAKE_MSG:
                 time.sleep(0.01)
-                msg = test_msgid2()
+                msg = test_msgid1()
             else:
                 msg = can0.recv(10.0)
             print(msg)
@@ -59,8 +59,8 @@ class Receive(QRunnable):
             throttle = (data[4] * 256 + data[5]) * 0.0015259
             blur_ratio = min(1, max(0, 2 * throttle / 100))  # TODO: what is considered a large throttle?
             self.main_win.RPMDial.set_blur_effect(blur_ratio)
-            # self.main_win.AFRDial.set_blur_effect(blur_ratio)
-            # self.main_win.VelocityDial.set_blur_effect(blur_ratio)  # TODO: which one looks better?
+            self.main_win.AFRDial.set_blur_effect(blur_ratio)
+            self.main_win.VelocityDial.set_blur_effect(blur_ratio)  # TODO: which one looks better?
 
             # byte 7, Coolant Temp,  8 bit signed 2's comp, scaling 1 Deg C/bit 0, range -128 to 127 C
             coolant = data[7] - 128
@@ -83,7 +83,6 @@ class Receive(QRunnable):
             print("lambda1", lambda1, "speed", speed, "battery", battery)
         # TODO: where is brake?
 
-        # only if the incoming message is valid:
         self.main_win.update_timer.on_receive_data()
 
 

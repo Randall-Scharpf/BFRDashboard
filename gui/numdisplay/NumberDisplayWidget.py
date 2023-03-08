@@ -62,7 +62,7 @@ class NumberDisplayWidget(QWidget):
         self.numberLabel.setText(str(num))
         if not self.prev_num_digits == num_len:
             self._repaint_font()
-        prev_num_digits = num_len
+        self.prev_num_digits = num_len
 
     def _repaint_font(self):
         self.numberLabel.setStyleSheet(globalfonts.FONT_CSS + globalfonts.TRANSPARENT_CSS + self.color_css + self.fontsize_css)

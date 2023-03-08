@@ -310,6 +310,25 @@
      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
     </property>
    </widget>
+   <widget class="QLabel" name="FPSLabel">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>660</y>
+      <width>111</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: white; font-size : 25px; background-color : rgba(0, 0, 0, 0)</string>
+    </property>
+    <property name="text">
+     <string>FPS: N</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
    <zorder>LeftNumBox</zorder>
    <zorder>VelocityDial</zorder>
    <zorder>AFRDial</zorder>
@@ -325,6 +344,7 @@
    <zorder>CANStatusLabel</zorder>
    <zorder>BFRIcon</zorder>
    <zorder>ExitLabel</zorder>
+   <zorder>FPSLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
