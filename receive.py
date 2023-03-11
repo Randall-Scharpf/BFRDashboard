@@ -24,6 +24,7 @@ TIMEOUT = 10
 MSGID_1 = int("0x01F0A000", 0)
 MSGID_2 = int("0x01F0A003", 0)
 # TODO: what is considered a large throttle?
+# TODO: gear?
 MAX_BLUR_THROTTLE = 50  # percent throttle at which blur reaches max effect
 
 

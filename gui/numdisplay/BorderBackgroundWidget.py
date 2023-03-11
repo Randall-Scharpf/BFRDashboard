@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QRectF
 
 
-border_color = QColor(182, 182, 182, 255)
+border_color = QColor(116, 116, 116, 255)
 border_width = 5
 width = 240
 height = 330

@@ -7,7 +7,7 @@ DIAL_SCALE = 1.0
 
 # helper constants to prevent typos
 FONT_CSS = "font-family: Ubuntu;"  # ben's favorite font
-WHITE_CSS = "color: white;"
+WHITE_CSS = "color: rgba(255, 255, 255, 255);"
 TRANSPARENT_CSS = "background-color : rgba(0, 0, 0, 0);"
 
 

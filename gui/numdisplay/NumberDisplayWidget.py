@@ -12,7 +12,7 @@ DIGIT_TO_FONTSIZE = {1 : 126, 2 : 106, 3 : 85, 4: 70}
 
 
 class NumberDisplayWidget(QWidget):
-    fontsize_css = globalfonts.scaled_css_size(96)
+    fontsize_css = globalfonts.scaled_css_size(126)
     color_css = globalfonts.WHITE_CSS
     prev_num_digits = 1
 

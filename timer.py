@@ -2,7 +2,6 @@ import globalfonts
 from datetime import datetime
 
 
-# constants
 MS_PER_UPDATE = 100 # 100 for RP
 ELAPSED_UPDATE_TOLERANCE = 1000
 ELAPSED_UPDATE_MAX = 99 * 1000
@@ -12,14 +11,14 @@ TIME_DISPLAY_FORMAT = '%m/%d/%y %I:%M:%S %p %a'
 
 
 class UpdateTimer():
+    elapsed_ms = 1000
+    elapsed_update_time = ELAPSED_UPDATE_TOLERANCE
+    elasped_update_fps_time = FPS_UPDATE_TIME
     elapsed_num_messages = 0
     timestamp = -1
 
     def __init__(self, main_win):
         self.main_win = main_win
-        self.elapsed_ms = 1000
-        self.elapsed_update_time = ELAPSED_UPDATE_TOLERANCE
-        self.elasped_update_fps_time = FPS_UPDATE_TIME
 
     def on_update_labels(self):
         global MS_PER_UPDATE
@@ -53,11 +52,9 @@ class UpdateTimer():
             self.elapsed_num_messages = 0
             self.elasped_update_fps_time = 0
 
-
     def on_receive_data(self):
         self.elapsed_update_time = 0
         self.elapsed_num_messages = self.elapsed_num_messages + 1
-
 
     def set_timestamp(self, ts):
         self.timestamp = ts
