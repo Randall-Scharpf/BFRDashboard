@@ -798,10 +798,7 @@ class AnalogGaugeWidget(QWidget):
         else:
             self.value = value
         # self.paintEvent("")
-        if self.allow_floats:  # jason: int to float
-            self.valueChanged.emit(float(value))
-        else:
-            self.valueChanged.emit(int(value))
+        self.valueChanged.emit(float(value))  # jason: int to float
         # print(self.value)
 
         # ohne timer: aktiviere self.update()
@@ -1197,10 +1194,7 @@ class AnalogGaugeWidget(QWidget):
         text_radius_factor = 0.8
         text_radius = self.widget_diameter / 2 * text_radius_factor
 
-        if self.allow_floats:  # jason: int to float
-            scale_per_div = float((self.maxValue - self.minValue) / self.scalaCount)
-        else:
-            scale_per_div = int((self.maxValue - self.minValue) / self.scalaCount)
+        scale_per_div = (float(self.maxValue) - self.minValue) / self.scalaCount  # jason: int to float
 
         angle_distance = (float(self.scale_angle_size) /
                           float(self.scalaCount))

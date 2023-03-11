@@ -7,6 +7,7 @@ import time
 
 PROCESS_FAKE_MSG = True
 fake_msg_num = 0
+PRINT_MSG = True
 
 if not PROCESS_FAKE_MSG:
     os.system('sudo ip link set can0 type can bitrate 500000')
@@ -19,8 +20,11 @@ if not PROCESS_FAKE_MSG:
 # https://forums.raspberrypi.com/viewtopic.php?t=141052
 # https://harrisonsand.com/posts/can-on-the-raspberry-pi/
 
+TIMEOUT = 10
 MSGID_1 = int("0x01F0A000", 0)
 MSGID_2 = int("0x01F0A003", 0)
+# TODO: what is considered a large throttle?
+MAX_BLUR_THROTTLE = 50  # percent throttle at which blur reaches max effect
 
 
 class Receive(QRunnable):
@@ -35,20 +39,22 @@ class Receive(QRunnable):
                 time.sleep(0.01)
                 msg = test_msgid1()
             else:
-                msg = can0.recv(10.0)
-            print(msg)
+                msg = can0.recv(TIMEOUT)
+            if PRINT_MSG:
+                print("Recv:", msg)
             if msg is None:
-                print('Timeout occurred, no message.')
+                print('Timeout: occurred, no message.')
             else:
-                self.parse_message(msg.arbitration_id, msg.data)
+                self.parse_message(msg.arbitration_id, msg.data, msg.timestamp)
 
     def stop(self):
         self.keep_running = False
         if not PROCESS_FAKE_MSG:
             os.system('sudo ifconfig can0 down')
 
-    def parse_message(self, id, data):
-        size = len(data)
+    def parse_message(self, id, data, timestamp):
+        # update timestamp
+        self.main_win.update_timer.set_timestamp(timestamp)
         if id == MSGID_1:
             # TOOD: check if size is good
             # byte 0-1, Engine Speed, 16 bit unsigned, scaling 0.39063 rpm/bit, range 0 to 25,599.94 RPM
@@ -57,7 +63,7 @@ class Receive(QRunnable):
 
             # byte 4-5, Throttle, 16 bit unsigned, scaling 0.0015259 %/bit, range 0 to 99.998 %
             throttle = (data[4] * 256 + data[5]) * 0.0015259
-            blur_ratio = min(1, max(0, 2 * throttle / 100))  # TODO: what is considered a large throttle?
+            blur_ratio = min(1, max(0, throttle / MAX_BLUR_THROTTLE))
             self.main_win.RPMDial.set_blur_effect(blur_ratio)
             self.main_win.AFRDial.set_blur_effect(blur_ratio)
             self.main_win.VelocityDial.set_blur_effect(blur_ratio)  # TODO: which one looks better?
@@ -66,22 +72,27 @@ class Receive(QRunnable):
             coolant = data[7] - 128
             self.main_win.CoolantTemp.set_number(coolant)
 
-            print("rpm", rpm, "throttle", throttle, "coolant", coolant)
+            if PRINT_MSG:
+                print("MSGID_1: rpm", rpm, "throttle", throttle, "coolant", coolant)
         elif id == MSGID_2:
             # byte 0, Lambda #1, 8 bit unsigned, scaling 0.00390625 Lambda/bit, offset 0.5, range 0.5 to 1.496 Lambda
             lambda1 = data[0] * 0.00390625 + 0.5  # TODO: Lambda 1 or lambda 2 or lambda target?
-            # self.main_win.AFRDial.updateValue(lambda1)
+            self.main_win.AFRDial.updateValue(lambda1)
 
             # byte 2-3, Vehicle Speed, 16 bit unsigned, scaling 0.0062865 kph/bit, range 0 to 411.986 km/h
-            speed = (data[2] * 256 + data[3]) * 0.0062865
-            # self.main_win.VelocityDial.updateValue(speed)
+            speed = (data[2] * 256 + data[3]) * 0.0062865 # Is this right?
+            self.main_win.VelocityDial.updateValue(speed)
 
             # 6-7 Battery Volts 16 bit unsigned 0.0002455 V/bit 0 to 16.089 Volts
             battery = (data[6] * 256 + data[7]) * 0.0002455
             self.main_win.Battery.set_number(battery)
 
-            print("lambda1", lambda1, "speed", speed, "battery", battery)
-        # TODO: where is brake?
+            if PRINT_MSG:
+                print("MSGID_2: lambda1", lambda1, "speed", speed, "battery", battery)
+        # TODO: where is brake? exhaust?
+        else:
+            if PRINT_MSG:
+                print("MSGID_UNK, skipped")
 
         self.main_win.update_timer.on_receive_data()
 

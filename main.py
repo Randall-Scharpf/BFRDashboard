@@ -6,7 +6,7 @@ This command packages gui/resources and gui/main.ui into resources.py
 for more reference website: https://www.pythonguis.com/tutorials/qresource-system/
 '''
 import resources, globalfonts, timer
-import sys, logging
+import sys
 from datetime import datetime
 from receive import Receive
 from timer import UpdateTimer
@@ -18,17 +18,8 @@ from PyQt5.QtCore import Qt, QFile, QTimer, QThreadPool, QCoreApplication
 LOAD_UI_FROM_RES = False
 FULL_SCREEN = False
 
-
-# TODO: name log file
-dt_string = datetime.now().strftime("%m-%d-%Y %H:%M:%S")
-logging.basicConfig(filename="logs/" + dt_string + ".log",
-                    format='%(asctime)s %(message)s',
-                    filemode='a')
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
 window = None
-
+# TODO: warnings & error messages
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -49,15 +40,14 @@ class MainWindow(QMainWindow):
 
         # launch timer
         self.update_timer = UpdateTimer(self)
-        logging.debug('Timer times out every ' + str(timer.MS_PER_UPDATE) + 'ms')
+        print('Timer times out every ' + str(timer.MS_PER_UPDATE) + ' ms')
         # launch timer to call infinitely
         qtimer = QTimer(self)
         qtimer.timeout.connect(self.update_timer.on_update_labels)
         qtimer.start(timer.MS_PER_UPDATE)
 
         # launch receive
-        logging.debug('QThreadPool max thread count is ' +
-                      str(QThreadPool.globalInstance().maxThreadCount()))
+        print('QThreadPool max thread count is ' + str(QThreadPool.globalInstance().maxThreadCount()))
         pool = QThreadPool.globalInstance()
         self.receive_thread = Receive(self)
         self.ExitLabel.exit.connect(self.receive_thread.stop)
@@ -68,15 +58,13 @@ class MainWindow(QMainWindow):
             self.showFullScreen()
         else:
             self.show()
-        logging.debug("Current screen width: " + str(self.frameGeometry().width()) +
-                      ", height: " + str(self.frameGeometry().height()))
+        print("Current screen width: " + str(self.frameGeometry().width()) + ", height: " + str(self.frameGeometry().height()))
         self.setCursor(Qt.BlankCursor)
 
 
 if __name__ == "__main__":
-    # idk what these two lines really do but let's leave them there
-    QApplication.setStyle("fusion")
-    QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
+    # QApplication.setStyle("fusion")
+    # QCoreApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     app = QApplication([])
     window = MainWindow()
     sys.exit(app.exec_())

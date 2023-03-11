@@ -1,17 +1,20 @@
 import globalfonts
-import logging
-from PyQt5.QtCore import QDateTime
+from datetime import datetime
 
 
 # constants
 MS_PER_UPDATE = 100 # 100 for RP
 ELAPSED_UPDATE_TOLERANCE = 1000
 ELAPSED_UPDATE_MAX = 99 * 1000
-
 FPS_UPDATE_TIME = 500
+
+TIME_DISPLAY_FORMAT = '%m/%d/%y %I:%M:%S %p %a'
+
 
 class UpdateTimer():
     elapsed_num_messages = 0
+    timestamp = -1
+
     def __init__(self, main_win):
         self.main_win = main_win
         self.elapsed_ms = 1000
@@ -26,8 +29,10 @@ class UpdateTimer():
 
         # update Time Label every whole second
         if self.elapsed_ms > 1000:
-            time = QDateTime.currentDateTime()
-            time_display = time.toString('MM/dd/yy h:mm:ss AP dddd')
+            if self.timestamp == -1:
+                time_display = datetime.now().strftime('(ST) ' + TIME_DISPLAY_FORMAT)
+            else:
+                time_display = datetime.fromtimestamp(self.timestamp).strftime(TIME_DISPLAY_FORMAT)
             self.main_win.TimeLabel.setText(time_display)
             self.elapsed_ms -= 1000
 
@@ -52,4 +57,8 @@ class UpdateTimer():
     def on_receive_data(self):
         self.elapsed_update_time = 0
         self.elapsed_num_messages = self.elapsed_num_messages + 1
+
+
+    def set_timestamp(self, ts):
+        self.timestamp = ts
 
