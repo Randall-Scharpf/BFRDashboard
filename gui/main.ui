@@ -244,7 +244,7 @@
      <string notr="true">color: white; font-size : 25px; background-color : rgba(0, 0, 0, 0)</string>
     </property>
     <property name="text">
-     <string>No connection (99)</string>
+     <string/>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

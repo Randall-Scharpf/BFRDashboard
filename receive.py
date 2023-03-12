@@ -44,7 +44,7 @@ class Receive(QRunnable):
         while self.keep_running: # networ
             if PROCESS_FAKE_MSG:
                 time.sleep(0.01)
-                msg = test_msgid2()
+                msg = test_timer()
             else:
                 msg = can0.recv(TIMEOUT)
             if PRINT_MSG:
@@ -60,8 +60,6 @@ class Receive(QRunnable):
             os.system('sudo ifconfig can0 down')
 
     def parse_message(self, id, data, timestamp):
-        # update timestamp
-        self.main_win.update_timer.timestamp = timestamp
         if id == MSGID_1:
             # TOOD: check if size is good
             # byte 0-1, Engine Speed, 16 bit unsigned, scaling 0.39063 rpm/bit, range 0 to 25,599.94 RPM
@@ -101,7 +99,7 @@ class Receive(QRunnable):
             if PRINT_MSG:
                 print("MSGID_UNK, skipped")
 
-        self.main_win.update_timer.on_receive_data()
+        self.main_win.update_timer.on_receive_data(timestamp)
 
 
 def test_msgid1():
@@ -109,8 +107,14 @@ def test_msgid1():
     fake_msg_num = min(fake_msg_num + 0.1, 255)
     return Message(data=bytearray([int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0, 0, int(fake_msg_num)]), arbitration_id=MSGID_1)
 
-
 def test_msgid2():
     global fake_msg_num
     fake_msg_num = min(fake_msg_num + 0.1, 255)
     return Message(data=bytearray([int(fake_msg_num), 0, int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0]), arbitration_id=MSGID_2)
+
+def test_timer():
+    global fake_msg_num
+    fake_msg_num += 0.005
+    if int(fake_msg_num) % 2 == 0:
+        return None
+    return Message(data=bytearray([]), arbitration_id=0, timestamp = fake_msg_num * 10)
