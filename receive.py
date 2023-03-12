@@ -4,10 +4,16 @@ import os
 import can
 import time
 
+# https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/
+# https://learn.sparkfun.com/tutorials/how-to-run-a-raspberry-pi-program-on-startup#method-2-autostart
 
 PROCESS_FAKE_MSG = True
 fake_msg_num = 0
 PRINT_MSG = True
+
+# analog update time to 20, improve efficiency
+# gui update separately, time label seconds too long on pi
+# check msg is error frame
 
 if not PROCESS_FAKE_MSG:
     os.system('sudo ip link set can0 type can bitrate 500000')
@@ -38,7 +44,7 @@ class Receive(QRunnable):
         while self.keep_running: # networ
             if PROCESS_FAKE_MSG:
                 time.sleep(0.01)
-                msg = test_msgid1()
+                msg = test_msgid2()
             else:
                 msg = can0.recv(TIMEOUT)
             if PRINT_MSG:
@@ -55,7 +61,7 @@ class Receive(QRunnable):
 
     def parse_message(self, id, data, timestamp):
         # update timestamp
-        self.main_win.update_timer.set_timestamp(timestamp)
+        self.main_win.update_timer.timestamp = timestamp
         if id == MSGID_1:
             # TOOD: check if size is good
             # byte 0-1, Engine Speed, 16 bit unsigned, scaling 0.39063 rpm/bit, range 0 to 25,599.94 RPM

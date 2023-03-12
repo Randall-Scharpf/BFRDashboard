@@ -7,7 +7,6 @@ for more reference website: https://www.pythonguis.com/tutorials/qresource-syste
 '''
 import resources, globalfonts, timer
 import sys
-from datetime import datetime
 from receive import Receive
 from timer import UpdateTimer
 from PyQt5 import uic
