@@ -16,8 +16,9 @@ class NumberDisplayWidget(QWidget):
     color_css = globalfonts.WHITE_CSS
     prev_num_digits = 1
 
-    def __init__(self, icon_filepath, unit, flipped, parent=None):
+    def __init__(self, icon_filepath, unit, flipped, allow_floats=False, parent=None):
         super(NumberDisplayWidget, self).__init__(parent)
+        self.allow_floats = allow_floats
 
         pixmap = QPixmap(icon_filepath)
         pixmap = pixmap.scaledToWidth(icon_size)
@@ -53,7 +54,10 @@ class NumberDisplayWidget(QWidget):
         self._repaint_font()
 
     def set_number(self, num):
-        num = int(num)
+        if self.allow_floats:
+            num = round(num, 1)
+        else:
+            num = int(num)
         num_len = len(str(num))
         if (num_len < 1 or num_len > 4):
             self.fontsize_css = globalfonts.scaled_css_size(DIGIT_TO_FONTSIZE[4])

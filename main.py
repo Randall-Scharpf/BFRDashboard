@@ -11,16 +11,19 @@ from receive import Receive
 from timer import UpdateTimer
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtCore import Qt, QFile, QTimer, QThreadPool, QCoreApplication
+from PyQt5.QtCore import Qt, QFile, QTimer, QThreadPool, QCoreApplication, pyqtSignal, pyqtSlot
 
 
 LOAD_UI_FROM_RES = False
 FULL_SCREEN = False
 
 window = None
-# TODO: warnings & error messages
+
 
 class MainWindow(QMainWindow):
+    update_gui = pyqtSignal(dict)
+    update_timestamp = pyqtSignal(int)
+
     def __init__(self, parent=None):
         # initialize
         QMainWindow.__init__(self)
@@ -48,7 +51,9 @@ class MainWindow(QMainWindow):
         # launch receive
         print('QThreadPool max thread count is ' + str(QThreadPool.globalInstance().maxThreadCount()))
         pool = QThreadPool.globalInstance()
-        self.receive_thread = Receive(self)
+        self.receive_thread = Receive(self.update_gui, self.update_timestamp)
+        self.update_timestamp.connect(self.update_timer.on_receive_data)
+        self.update_gui.connect(self.update_gui_values)
         self.ExitLabel.exit.connect(self.receive_thread.stop)
         pool.start(self.receive_thread)
 
@@ -59,6 +64,23 @@ class MainWindow(QMainWindow):
             self.show()
         print("Current screen width: " + str(self.frameGeometry().width()) + ", height: " + str(self.frameGeometry().height()))
         self.setCursor(Qt.BlankCursor)
+
+    @pyqtSlot(dict)
+    def update_gui_values(self, dict):
+        if 'rpm' in dict:
+            self.RPMDial.updateValue(dict['rpm'])
+        if 'blur' in dict:
+            self.RPMDial.set_blur_effect(dict['blur'])
+            self.AFRDial.set_blur_effect(dict['blur'])
+            self.VelocityDial.set_blur_effect(dict['blur'])
+        if 'coolant' in dict:
+            self.CoolantTemp.set_number(dict['coolant'])
+        if 'lambda' in dict:
+            self.AFRDial.updateValue(dict['lambda'])
+        if 'speed' in dict:
+            self.VelocityDial.updateValue(dict['speed']) # change velocity to speed
+        if 'battery' in dict:
+            self.Battery.set_number(dict['battery'])
 
 
 if __name__ == "__main__":

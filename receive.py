@@ -12,8 +12,6 @@ fake_msg_num = 0
 PRINT_MSG = True
 
 # analog update time to 20, improve efficiency
-# gui update separately, time label seconds too long on pi
-# check msg is error frame
 
 if not PROCESS_FAKE_MSG:
     os.system('sudo ip link set can0 type can bitrate 500000')
@@ -27,24 +25,23 @@ if not PROCESS_FAKE_MSG:
 # https://harrisonsand.com/posts/can-on-the-raspberry-pi/
 
 TIMEOUT = 10
-MSGID_1 = int("0x01F0A000", 0)
-MSGID_2 = int("0x01F0A003", 0)
-# TODO: what is considered a large throttle?
-# TODO: gear?
+MSGID_1 = 0x01F0A000
+MSGID_2 = 0x01F0A003
 MAX_BLUR_THROTTLE = 50  # percent throttle at which blur reaches max effect
 
 
 class Receive(QRunnable):
-    def __init__(self, main_win):
+    def __init__(self, update_gui, update_timestamp):
         super().__init__()
         self.keep_running = True
-        self.main_win = main_win
+        self.update_gui = update_gui
+        self.update_timestamp = update_timestamp
 
     def run(self):
-        while self.keep_running: # networ
+        while self.keep_running:
             if PROCESS_FAKE_MSG:
-                time.sleep(0.01)
-                msg = test_timer()
+                time.sleep(0.001)
+                msg = test_msgid2()
             else:
                 msg = can0.recv(TIMEOUT)
             if PRINT_MSG:
@@ -61,45 +58,46 @@ class Receive(QRunnable):
 
     def parse_message(self, id, data, timestamp):
         if id == MSGID_1:
-            # TOOD: check if size is good
+            data_dict = {}
             # byte 0-1, Engine Speed, 16 bit unsigned, scaling 0.39063 rpm/bit, range 0 to 25,599.94 RPM
             rpm = (data[0] * 256 + data[1]) * 0.39063 / 1000
-            self.main_win.RPMDial.updateValue(rpm)
+            data_dict['rpm'] = rpm
 
             # byte 4-5, Throttle, 16 bit unsigned, scaling 0.0015259 %/bit, range 0 to 99.998 %
             throttle = (data[4] * 256 + data[5]) * 0.0015259
             blur_ratio = min(1, max(0, throttle / MAX_BLUR_THROTTLE))
-            self.main_win.RPMDial.set_blur_effect(blur_ratio)
-            self.main_win.AFRDial.set_blur_effect(blur_ratio)
-            self.main_win.VelocityDial.set_blur_effect(blur_ratio)  # TODO: which one looks better?
+            data_dict['blur'] = blur_ratio
 
             # byte 7, Coolant Temp,  8 bit signed 2's comp, scaling 1 Deg C/bit 0, range -128 to 127 C
-            coolant = data[7] - 128
-            self.main_win.CoolantTemp.set_number(coolant)
+            coolant = data[7]
+            if coolant >= 128:
+                coolant -= 128
+            data_dict['coolant'] = coolant
 
             if PRINT_MSG:
                 print("MSGID_1: rpm", rpm, "throttle", throttle, "coolant", coolant)
+            self.update_gui.emit(data_dict)
         elif id == MSGID_2:
+            data_dict = {}
             # byte 0, Lambda #1, 8 bit unsigned, scaling 0.00390625 Lambda/bit, offset 0.5, range 0.5 to 1.496 Lambda
-            lambda1 = data[0] * 0.00390625 + 0.5  # TODO: Lambda 1 or lambda 2 or lambda target?
-            self.main_win.AFRDial.updateValue(lambda1)
+            lambda1 = data[0] * 0.00390625 + 0.5
+            data_dict['lambda'] = lambda1
 
             # byte 2-3, Vehicle Speed, 16 bit unsigned, scaling 0.0062865 kph/bit, range 0 to 411.986 km/h
-            speed = (data[2] * 256 + data[3]) * 0.0062865 # Is this right?
-            self.main_win.VelocityDial.updateValue(speed)
+            speed = (data[2] * 256 + data[3]) * 0.0062865
+            data_dict['speed'] = speed
 
             # 6-7 Battery Volts 16 bit unsigned 0.0002455 V/bit 0 to 16.089 Volts
             battery = (data[6] * 256 + data[7]) * 0.0002455
-            self.main_win.Battery.set_number(battery)
+            data_dict['battery'] = battery
 
             if PRINT_MSG:
                 print("MSGID_2: lambda1", lambda1, "speed", speed, "battery", battery)
-        # TODO: where is brake? exhaust?
+            self.update_gui.emit(data_dict)
         else:
             if PRINT_MSG:
                 print("MSGID_UNK, skipped")
-
-        self.main_win.update_timer.on_receive_data(timestamp)
+        self.update_timestamp.emit(timestamp)
 
 
 def test_msgid1():
@@ -107,10 +105,12 @@ def test_msgid1():
     fake_msg_num = min(fake_msg_num + 0.1, 255)
     return Message(data=bytearray([int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0, 0, int(fake_msg_num)]), arbitration_id=MSGID_1)
 
+
 def test_msgid2():
     global fake_msg_num
     fake_msg_num = min(fake_msg_num + 0.1, 255)
     return Message(data=bytearray([int(fake_msg_num), 0, int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0]), arbitration_id=MSGID_2)
+
 
 def test_timer():
     global fake_msg_num
