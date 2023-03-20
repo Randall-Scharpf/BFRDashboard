@@ -340,7 +340,7 @@ MPS: N</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: white; font-size : 25px; background-color : rgba(0, 0, 0, 0);</string>
+     <string notr="true">color: white; font-size : 25px; background-color : rgba(40,40,40,255);</string>
     </property>
     <property name="textFormat">
      <enum>Qt::RichText</enum>
@@ -376,7 +376,7 @@ MPS: N</string>
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>36</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

@@ -136,7 +136,7 @@ class Receive(QRunnable):
 def test_msgid0():
     global fake_msg_num
     fake_msg_num = min(fake_msg_num + 0.1, 255)
-    return Message(data=bytearray([int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0, 0, int(fake_msg_num)]), arbitration_id=MSGID_0)
+    return Message(data=bytearray([int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0, 0, int(fake_msg_num)]), arbitration_id=MSGID_0, timestamp=0)
 
 
 def test_msgid3():
@@ -144,7 +144,7 @@ def test_msgid3():
     fake_msg_num = min(fake_msg_num + 0.1, 255)
     if fake_msg_num < 100:
         return None
-    return Message(data=bytearray([int(fake_msg_num), 0, int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0]), arbitration_id=MSGID_3)
+    return Message(data=bytearray([int(fake_msg_num), 0, int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0]), arbitration_id=MSGID_3, timestamp=0)
 
 
 def test_timer():

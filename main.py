@@ -21,6 +21,7 @@ MAX_BLUR_THROTTLE = 50
 
 USE_SYS_TIME = False
 TIME_DISPLAY_FORMAT = '%m/%d/%y %I:%M:%S %p %a'
+OBSOLETE_DATA_SEC = 1
 
 DATA_KEYS = ['battery', 'coolant', 'engine_speed', 'exhaust', 'fan1', 'fuel_pressure', 'fuel_pump', 'gear', 'ignition_timing',
 'injector_duty', 'intake', 'lambda1', 'lambda_target', 'lrt', 'map', 'mass_airflow', 'rotation_x',
@@ -97,16 +98,22 @@ class MainWindow(QMainWindow):
 
         if data_dict['battery']['prev_update_ts'] != -1:
             self.Battery.set_number(data_dict['battery']['value'])
+            self.Battery.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['battery']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['coolant']['prev_update_ts'] != -1:
             self.CoolantTemp.set_number(data_dict['coolant']['value'])
+            self.CoolantTemp.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['coolant']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['engine_speed']['prev_update_ts'] != -1:
             self.RPMDial.updateValue(data_dict['engine_speed']['value'])
+            self.RPMDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['engine_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['gear']['prev_update_ts'] != -1:
             self.Gear.gear.setText(str(data_dict['gear']['value']))
+            self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['gear']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['lambda1']['prev_update_ts'] != -1:
             self.AFRDial.updateValue(data_dict['lambda1']['value'])
+            self.AFRDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['lambda1']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['vehicle_speed']['prev_update_ts'] != -1:
             self.VelocityDial.updateValue(data_dict['vehicle_speed']['value']) # TODO change velocity to speed
+            self.VelocityDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['vehicle_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['throttle']['prev_update_ts'] != -1:
             blur_ratio = min(1, max(0, data_dict['throttle']['value'] / MAX_BLUR_THROTTLE))
             self.RPMDial.set_blur_effect(blur_ratio)

@@ -239,6 +239,7 @@ class AnalogGaugeWidget(QWidget):
         ################################################################################################
         self.rescale_method()
 
+    # jason: custom functions
     def getValue(self):
         return self.value
 

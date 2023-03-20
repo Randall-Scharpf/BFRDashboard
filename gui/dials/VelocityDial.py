@@ -37,3 +37,9 @@ class VelocityDial(AnalogGaugeWidget):
 
     def set_blur_effect(self, blur_ratio):
         self.effect.setBlurRadius(blur_ratio * MAX_BLUR_RADIUS)
+
+    def set_obsolete(self, obsolete):
+        if obsolete:
+            super().setDisplayValueColor(170, 170, 170, 255)
+        else:
+            super().setDisplayValueColor(206, 244, 255, 255)

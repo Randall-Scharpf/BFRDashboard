@@ -5,6 +5,7 @@ SHOW_X = 1100
 HIDE_X = 1260
 MOVE_PX_PER_SEC = 200
 STAY_TIME = 5
+HEIGHT_PAD = 10
 
 
 class ErrorBox(QLabel):
@@ -45,10 +46,12 @@ class ErrorBox(QLabel):
         self.setText("<font color=\"orange\">" + title + "</font><br>" + msg)
         self.__state = 1
         self.adjustSize()
+        self.resize(self.width(), self.height() + HEIGHT_PAD)
         self.show()
 
     def error(self, title, msg):
         self.setText("<font color=\"red\">" + title + "</font><br>" + msg)
         self.__state = 1
         self.adjustSize()
+        self.resize(self.width(), self.height() + HEIGHT_PAD)
         self.show()

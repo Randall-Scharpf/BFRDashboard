@@ -48,11 +48,6 @@ class NumberDisplayWidget(QWidget):
             self.unitLabel.setGeometry(174, 36, 48, 48)
         self.unitLabel.setAlignment(Qt.AlignCenter)
 
-    def _set_number_color(self, r, g, b):
-        color_str = "rgba(" + str(r) + "," + str(g) + "," + str(b) + ",255)"
-        self.color_css = "color: " + color_str + ";"
-        self._repaint_font()
-
     def set_number(self, num):
         if self.allow_floats:
             num = round(num, 1)
@@ -70,3 +65,10 @@ class NumberDisplayWidget(QWidget):
 
     def _repaint_font(self):
         self.numberLabel.setStyleSheet(globalfonts.FONT_CSS + globalfonts.TRANSPARENT_CSS + self.color_css + self.fontsize_css)
+
+    def set_obsolete(self, obsolete):
+        if obsolete:
+            self.color_css = "color:rgba(170,170,170,255);"
+        else:
+            self.color_css = globalfonts.WHITE_CSS
+        self._repaint_font()
