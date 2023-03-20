@@ -1,9 +1,9 @@
 # constants
 # raspberry pi's OS has different-looking fonts than MacOS or Windows
 # a scalar applied to the font size of every non-dial widget
-SCALE = 1.0  # 0.8 on RP
+SCALE = 1.0
 # a scalar applied to the font size of every dial widget
-DIAL_SCALE = 1.0
+DIAL_SCALE = 1.0 # 0.8 on RP
 
 # helper constants to prevent typos
 FONT_CSS = "font-family: Ubuntu;"  # ben's favorite font
