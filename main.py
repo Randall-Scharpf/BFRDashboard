@@ -29,13 +29,13 @@ data_dict = {}
 for key in DATA_KEYS:
     data_dict[key] = {'value': None, 'prev_update_ts': -1}
 dt_offset = dt.now() - dt.now()
-last_msg_ts = (dt.now() - datetime.timedelta(seconds=1)).timestamp()
+last_msg_dt = dt.now() - datetime.timedelta(seconds=1)
 msg_count = 0
 
 @pyqtSlot(float, dict)
 def update_data(ts, dict):
-    global last_msg_ts, msg_count
-    last_msg_ts = (dt_offset + dt.now()).timestamp()
+    global last_msg_dt, msg_count
+    last_msg_dt = dt.now()
     msg_count += 1
     for key, value in dict.items():
         data_dict[key]['value'] = value
@@ -49,7 +49,8 @@ def init_timestamp(timestamp):
 
 class MainWindow(QMainWindow):
     __elapsed_updated_frames = 0
-    __prev_fps_update_dt = dt.now()
+    __prev_whole_update_dt = dt.now()
+    __prev_update_dt = dt.now()
 
     def __init__(self, parent=None):
         # initialize
@@ -114,8 +115,7 @@ class MainWindow(QMainWindow):
 
         self.TimeLabel.setText(adjusted_dt_object.strftime(TIME_DISPLAY_FORMAT))
 
-        last_msg_dt_object = dt.fromtimestamp(last_msg_ts)
-        disconnection_time = int((adjusted_dt_object - last_msg_dt_object).total_seconds())
+        disconnection_time = int((sys_dt_object - last_msg_dt).total_seconds())
         if disconnection_time >= 1:
             self.CANConnectionLabel.setText('No Connection (' + str(min(99, disconnection_time)) + ')')
             self.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + 'color: red;' + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
@@ -123,15 +123,18 @@ class MainWindow(QMainWindow):
             self.CANConnectionLabel.setText('Connected')
             self.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + 'color: green;' + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
 
-        elapsed_fps_update_seconds = (sys_dt_object - self.__prev_fps_update_dt).total_seconds()
+        elapsed_fps_update_seconds = (sys_dt_object - self.__prev_whole_update_dt).total_seconds()
         if elapsed_fps_update_seconds > 1:
             global msg_count
             self.FPSLabel.setText("FPS: " + str(min(99, int(self.__elapsed_updated_frames / elapsed_fps_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_fps_update_seconds))))
             self.__elapsed_updated_frames = 0
-            self.__prev_fps_update_dt = dt.now()
+            self.__prev_whole_update_dt = dt.now()
             msg_count = 0
-
         self.__elapsed_updated_frames += 1
+
+        elapsed_update_seconds = (sys_dt_object - self.__prev_update_dt).total_seconds()
+        self.ErrorBox.update_frame(elapsed_update_seconds)
+        self.__prev_update_dt = dt.now()
 
 
 if __name__ == "__main__":

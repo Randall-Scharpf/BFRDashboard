@@ -58,7 +58,7 @@ class Receive(QRunnable):
                 initial_msg = test_msgid3()
             else:
                 initial_msg = can0.recv(TIMEOUT)
-            if initial_msg != None:
+            if initial_msg is not None:
                 self.signals.init_timestamp.emit(initial_msg.timestamp)
                 self.parse_message(initial_msg.arbitration_id, initial_msg.timestamp, initial_msg.data)
 
@@ -66,14 +66,11 @@ class Receive(QRunnable):
             if PROCESS_FAKE_MSG:
                 time.sleep(0.001)
                 msg = test_msgid3()
-                msg = None
             else:
                 msg = can0.recv(TIMEOUT)
             if PRINT_MSG:
                 print("Recv:", msg)
-            if msg is None:
-                print('Timeout: occurred, no message.')
-            else:
+            if msg is not None:
                 self.parse_message(msg.arbitration_id, msg.timestamp, msg.data)
 
     def stop(self):
@@ -152,7 +149,7 @@ def test_msgid3():
 
 def test_timer():
     global fake_msg_num
-    fake_msg_num += 0.005
+    fake_msg_num += 0.001
     if int(fake_msg_num) % 2 == 0:
         return None
-    return Message(data=bytearray([]), arbitration_id=0, timestamp = fake_msg_num * 10)
+    return Message(data=bytearray([]), arbitration_id=0, timestamp = 0)

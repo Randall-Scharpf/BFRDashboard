@@ -330,6 +330,28 @@ MPS: N</string>
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
+   <widget class="ErrorBox" name="ErrorBox">
+    <property name="geometry">
+     <rect>
+      <x>1260</x>
+      <y>160</y>
+      <width>160</width>
+      <height>200</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: white; font-size : 25px; background-color : rgba(0, 0, 0, 0);</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::RichText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
    <zorder>LeftNumBox</zorder>
    <zorder>VelocityDial</zorder>
    <zorder>AFRDial</zorder>
@@ -346,6 +368,7 @@ MPS: N</string>
    <zorder>BFRIcon</zorder>
    <zorder>ExitLabel</zorder>
    <zorder>FPSLabel</zorder>
+   <zorder>ErrorBox</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -353,7 +376,7 @@ MPS: N</string>
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>22</height>
+     <height>36</height>
     </rect>
    </property>
   </widget>
@@ -417,6 +440,11 @@ MPS: N</string>
    <class>ExitLabel</class>
    <extends>QLabel</extends>
    <header>gui/misc/ExitLabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ErrorBox</class>
+   <extends>QLabel</extends>
+   <header>gui/errorbox/ErrorBox.h</header>
   </customwidget>
  </customwidgets>
  <resources>
