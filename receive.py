@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QRunnable, Qt, QThreadPool, pyqtSignal
+from PyQt5.QtCore import QRunnable, Qt, QThreadPool, pyqtSignal, QObject
 from can import Message
 import os
 import can
@@ -9,7 +9,7 @@ import time
 
 PROCESS_FAKE_MSG = True
 fake_msg_num = 0
-PRINT_MSG = True
+PRINT_MSG = False
 
 # analog update time to 20, improve efficiency
 
@@ -31,13 +31,25 @@ MAX_BLUR_THROTTLE = 50  # percent throttle at which blur reaches max effect
 
 
 class Receive(QRunnable):
-    def __init__(self, update_gui, update_timestamp):
-        super().__init__()
+    class SignalHelper(QObject):
+        update_data = pyqtSignal(float, dict)
+        init_timestamp = pyqtSignal(float)
+    signals = SignalHelper()
+    def __init__(self):
+        super(Receive, self).__init__()
         self.keep_running = True
-        self.update_gui = update_gui
-        self.update_timestamp = update_timestamp
 
     def run(self):
+        initial_msg = None
+        while self.keep_running and initial_msg == None:
+            if PROCESS_FAKE_MSG:
+                initial_msg = test_msgid2()
+            else:
+                initial_msg = can0.recv(TIMEOUT)
+            if initial_msg != None:
+                self.signals.init_timestamp.emit(initial_msg.timestamp)
+                self.parse_message(initial_msg.arbitration_id, initial_msg.timestamp, initial_msg.data)
+
         while self.keep_running:
             if PROCESS_FAKE_MSG:
                 time.sleep(0.001)
@@ -49,55 +61,37 @@ class Receive(QRunnable):
             if msg is None:
                 print('Timeout: occurred, no message.')
             else:
-                self.parse_message(msg.arbitration_id, msg.data, msg.timestamp)
+                self.parse_message(msg.arbitration_id, msg.timestamp, msg.data)
 
     def stop(self):
         self.keep_running = False
         if not PROCESS_FAKE_MSG:
             os.system('sudo ifconfig can0 down')
 
-    def parse_message(self, id, data, timestamp):
+    def parse_message(self, id, timestamp, data):
+        data_dict = {}
         if id == MSGID_1:
-            data_dict = {}
             # byte 0-1, Engine Speed, 16 bit unsigned, scaling 0.39063 rpm/bit, range 0 to 25,599.94 RPM
-            rpm = (data[0] * 256 + data[1]) * 0.39063 / 1000
-            data_dict['rpm'] = rpm
-
+            data_dict['rpm'] = (data[0] * 256 + data[1]) * 0.39063 / 1000
             # byte 4-5, Throttle, 16 bit unsigned, scaling 0.0015259 %/bit, range 0 to 99.998 %
-            throttle = (data[4] * 256 + data[5]) * 0.0015259
-            blur_ratio = min(1, max(0, throttle / MAX_BLUR_THROTTLE))
-            data_dict['blur'] = blur_ratio
-
+            data_dict['throttle'] = (data[4] * 256 + data[5]) * 0.0015259
             # byte 7, Coolant Temp,  8 bit signed 2's comp, scaling 1 Deg C/bit 0, range -128 to 127 C
-            coolant = data[7]
-            if coolant >= 128:
-                coolant -= 128
-            data_dict['coolant'] = coolant
-
+            data_dict['coolant'] = data[7] if data[7] < 128 else data[7] - 256
             if PRINT_MSG:
-                print("MSGID_1: rpm", rpm, "throttle", throttle, "coolant", coolant)
-            self.update_gui.emit(data_dict)
+                print("MSGID_1: rpm", data_dict['rpm'], "throttle", data_dict['throttle'], "coolant", data_dict['coolant'])
         elif id == MSGID_2:
-            data_dict = {}
             # byte 0, Lambda #1, 8 bit unsigned, scaling 0.00390625 Lambda/bit, offset 0.5, range 0.5 to 1.496 Lambda
-            lambda1 = data[0] * 0.00390625 + 0.5
-            data_dict['lambda'] = lambda1
-
+            data_dict['lambda'] = data[0] * 0.00390625 + 0.5
             # byte 2-3, Vehicle Speed, 16 bit unsigned, scaling 0.0062865 kph/bit, range 0 to 411.986 km/h
-            speed = (data[2] * 256 + data[3]) * 0.0062865
-            data_dict['speed'] = speed
-
+            data_dict['speed'] = (data[2] * 256 + data[3]) * 0.0062865
             # 6-7 Battery Volts 16 bit unsigned 0.0002455 V/bit 0 to 16.089 Volts
-            battery = (data[6] * 256 + data[7]) * 0.0002455
-            data_dict['battery'] = battery
-
+            data_dict['battery'] = (data[6] * 256 + data[7]) * 0.0002455
             if PRINT_MSG:
-                print("MSGID_2: lambda1", lambda1, "speed", speed, "battery", battery)
-            self.update_gui.emit(data_dict)
+                print("MSGID_2: lambda1", data_dict['lambda'], "speed", data_dict['speed'], "battery", data_dict['battery'])
         else:
             if PRINT_MSG:
                 print("MSGID_UNK, skipped")
-        self.update_timestamp.emit(timestamp)
+        self.signals.update_data.emit(timestamp, data_dict)
 
 
 def test_msgid1():

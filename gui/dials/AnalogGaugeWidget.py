@@ -55,7 +55,7 @@ class AnalogGaugeWidget(QWidget):
         ################################################################################################
         # DEFAULT TIMER VALUE
         ################################################################################################
-        self.use_timer_event = True  # jason: False->True, calling self.update in another thread results in weird crashes
+        self.use_timer_event = False  # jason: calling self.update in another thread results in weird crashes
 
         ################################################################################################
         # DEFAULT NEEDLE COLOR

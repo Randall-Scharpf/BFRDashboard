@@ -314,19 +314,20 @@
     <property name="geometry">
      <rect>
       <x>1150</x>
-      <y>660</y>
-      <width>111</width>
-      <height>51</height>
+      <y>640</y>
+      <width>110</width>
+      <height>70</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">color: white; font-size : 25px; background-color : rgba(0, 0, 0, 0)</string>
     </property>
     <property name="text">
-     <string>FPS: N</string>
+     <string>FPS: N
+MPS: N</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <zorder>LeftNumBox</zorder>

@@ -10,7 +10,6 @@ FPS_UPDATE_TIME = 1
 
 USE_SYS_TIME = False
 TIME_DISPLAY_FORMAT = '%m/%d/%y %I:%M:%S %p %a'
-# FPSLabel to MPSLabel
 
 
 class UpdateTimer():
