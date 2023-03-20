@@ -57,7 +57,6 @@ class MainWindow(QMainWindow):
         # initialize
         QMainWindow.__init__(self)
         self.setWindowFlags(Qt.FramelessWindowHint)
-
         # load UI
         if LOAD_UI_FROM_RES:
             main_ui = QFile(":/res/main_ui")
@@ -65,34 +64,30 @@ class MainWindow(QMainWindow):
             uic.loadUi(main_ui, self)
         else:
             uic.loadUi("gui/main.ui", self)
-
         # scale widgets
         globalfonts.scale_size_for_all(self)
-
+        self.DataMonitor.hide()
+        self.OnDataMonitorLabel.on_data_monitor_turned_on.connect(self.__on_data_monitor_turn_on)
         # launch gui update loop
         qtimer = QTimer(self)
-        qtimer.timeout.connect(self.update_gui)
+        qtimer.timeout.connect(self.__update_gui)
         qtimer.start(10)
-
         # launch receive
         print('QThreadPool max thread count is ' + str(QThreadPool.globalInstance().maxThreadCount()))
         pool = QThreadPool.globalInstance()
-
         self.receive_thread = Receive()
         self.receive_thread.signals.update_data.connect(update_data)
         self.receive_thread.signals.init_timestamp.connect(init_timestamp)
         self.ExitLabel.exit.connect(self.receive_thread.stop)
         pool.start(self.receive_thread)
-
         # show self
         if FULL_SCREEN:
             self.showFullScreen()
         else:
             self.show()
         print("Current screen width: " + str(self.frameGeometry().width()) + ", height: " + str(self.frameGeometry().height()))
-        self.setCursor(Qt.BlankCursor)
 
-    def update_gui(self):
+    def __update_gui(self):
         sys_dt_object = dt.now()
         adjusted_dt_object = dt_offset + sys_dt_object
 
@@ -142,6 +137,14 @@ class MainWindow(QMainWindow):
         elapsed_update_seconds = (sys_dt_object - self.__prev_update_dt).total_seconds()
         self.ErrorBox.update_frame(elapsed_update_seconds)
         self.__prev_update_dt = dt.now()
+
+        if self.DataMonitor.isVisible():
+            pass
+
+    @pyqtSlot()
+    def __on_data_monitor_turn_on(self):
+        self.DataMonitor.show()
+        self.setCursor(Qt.ArrowCursor)
 
 
 if __name__ == "__main__":

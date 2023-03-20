@@ -21,6 +21,9 @@
     <family>Garamond</family>
    </font>
   </property>
+  <property name="cursor">
+   <cursorShape>BlankCursor</cursorShape>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -352,6 +355,38 @@ MPS: N</string>
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="OnDataMonitorLabel" name="OnDataMonitorLabel">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>120</width>
+      <height>130</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:white;font-size:30px;background-color: rgba(0,0,0,0);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+    </property>
+   </widget>
+   <widget class="QWidget" name="DataMonitor" native="true">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>1220</width>
+      <height>660</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgba(0,0,0,125);</string>
+    </property>
+   </widget>
    <zorder>LeftNumBox</zorder>
    <zorder>VelocityDial</zorder>
    <zorder>AFRDial</zorder>
@@ -369,6 +404,8 @@ MPS: N</string>
    <zorder>ExitLabel</zorder>
    <zorder>FPSLabel</zorder>
    <zorder>ErrorBox</zorder>
+   <zorder>OnDataMonitorLabel</zorder>
+   <zorder>DataMonitor</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -445,6 +482,11 @@ MPS: N</string>
    <class>ErrorBox</class>
    <extends>QLabel</extends>
    <header>gui/errorbox/ErrorBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>OnDataMonitorLabel</class>
+   <extends>QLabel</extends>
+   <header>gui/misc/OnDataMonitorLabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>
