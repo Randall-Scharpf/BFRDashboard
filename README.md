@@ -12,5 +12,7 @@ Email liug22@hotmail.com for suggestions
 7. You may have to update constant scalers in globalfonts.py since fonts in Raspberry Pi's OS look different.
 8. To hide the menu bar, enter in the terminal: `sudo nano /home/[name of your pi]/config/lxsession/LXDE-pi/autostart` and comment out by adding a '#' the line: `@lxpanel --profile LXDE`
 9. To launch on boot, enter in the terminal
-```mkdir /home/[name of your pi]/.config/autostart
-nano /home/pi/.config/autostart/mumble.desktop```
+```
+mkdir /home/[name of your pi]/.config/autostart
+nano /home/pi/.config/autostart/mumble.desktop
+```
