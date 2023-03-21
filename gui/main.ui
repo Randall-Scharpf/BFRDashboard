@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>BFRDashboard</class>
+ <widget class="QMainWindow" name="BFRDashboard">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -355,7 +355,7 @@ MPS: N</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="OnDataMonitorLabel" name="OnDataMonitorLabel">
+   <widget class="ToggleDataMonitorLabel" name="ToggleDataMonitorLabel">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -404,8 +404,8 @@ MPS: N</string>
    <zorder>ExitLabel</zorder>
    <zorder>FPSLabel</zorder>
    <zorder>ErrorBox</zorder>
-   <zorder>OnDataMonitorLabel</zorder>
    <zorder>DataMonitor</zorder>
+   <zorder>ToggleDataMonitorLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -484,15 +484,15 @@ MPS: N</string>
    <header>gui/errorbox/ErrorBox.h</header>
   </customwidget>
   <customwidget>
-   <class>OnDataMonitorLabel</class>
-   <extends>QLabel</extends>
-   <header>gui/misc/OnDataMonitorLabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>DataMonitor</class>
    <extends>QWidget</extends>
    <header>gui/datamonitor/DataMonitor.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ToggleDataMonitorLabel</class>
+   <extends>QLabel</extends>
+   <header>gui/misc/ToggleDataMonitorLabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>

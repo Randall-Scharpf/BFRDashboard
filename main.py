@@ -33,6 +33,8 @@ dt_offset = dt.now() - dt.now()
 last_msg_dt = dt.now() - datetime.timedelta(seconds=1)
 msg_count = 0
 
+# TODO start time (sys & adjusted), now (sys & adjusted), (optional) last msg (sys & adjusted), offset, elapsed warnings & errors
+
 @pyqtSlot(float, dict)
 def update_data(ts, dict):
     global last_msg_dt, msg_count
@@ -67,7 +69,7 @@ class MainWindow(QMainWindow):
             uic.loadUi("gui/main.ui", self)
         # scale widgets
         globalfonts.scale_size_for_all(self)
-        self.OnDataMonitorLabel.on_data_monitor_turned_on.connect(self.__on_data_monitor_turn_on)
+        self.ToggleDataMonitorLabel.on_toggle_data_monitor.connect(self.__on_toggle_data_monitor)
         # launch gui update loop
         qtimer = QTimer(self)
         qtimer.timeout.connect(self.__update_gui)
@@ -147,12 +149,16 @@ class MainWindow(QMainWindow):
                 for key in DATA_KEYS:
                     data_dict[key]['mps'] = data_dict[key]['msg_count'] / elapsed_whole_update_seconds
                     data_dict[key]['msg_count'] = 0
-            self.DataMonitor.update_frame(data_dict)
+            self.DataMonitor.DataTable1.update_frame(data_dict)
+            self.DataMonitor.DataTable2.update_frame(data_dict)
 
-    @pyqtSlot()
-    def __on_data_monitor_turn_on(self):
-        self.DataMonitor.show()
-        self.setCursor(Qt.ArrowCursor)
+    @pyqtSlot(bool)
+    def __on_toggle_data_monitor(self, toggle_cursor):
+        self.DataMonitor.setVisible(not self.DataMonitor.isVisible())
+        if self.DataMonitor.isVisible() and toggle_cursor:
+            self.setCursor(Qt.ArrowCursor)
+        else:
+            self.setCursor(Qt.BlankCursor)
 
 
 if __name__ == "__main__":

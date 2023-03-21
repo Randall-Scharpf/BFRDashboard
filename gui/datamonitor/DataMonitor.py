@@ -5,7 +5,8 @@ from PyQt5.QtCore import Qt, QFile
 
 LOAD_UI_FROM_RES = False
 DATA_TABLE1_KEYS = ['log', 'battery', 'brake', 'coolant', 'engine_speed', 'exhaust', 'gear', 'lambda1', 'throttle', 'vehicle_speed']
-DATA_TABLE2_KEYS = []
+DATA_TABLE2_KEYS = ['acc_x', 'acc_y', 'acc_z', 'acc_magnitude', 'fan1', 'fuel_pressure', 'fuel_pump', 'ignition_timing', 'injector_duty',
+'intake', 'lambda_target', 'lrt', 'map', 'mass_airflow', 'rotation_x', 'rotation_y', 'rotation_z', 've']
 
 
 class DataMonitor(QWidget):
@@ -19,6 +20,4 @@ class DataMonitor(QWidget):
         else:
             uic.loadUi("gui/datamonitor/data_monitor.ui", self)
         self.DataTable1.init(DATA_TABLE1_KEYS)
-
-    def update_frame(self, data_dict):
-        self.DataTable1.update_frame(data_dict)
+        self.DataTable2.init(DATA_TABLE2_KEYS)

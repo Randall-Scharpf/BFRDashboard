@@ -10,7 +10,7 @@ DATA_NAMES = {'acc_x': "AccX", 'acc_y': "AccY", 'acc_z': "AccZ", 'acc_magnitude'
 'lrt': "LRT", 'map': "MAP", 'mass_airflow': "MassAir", 'rotation_x': "RotX", 'rotation_y': "RotY", 'rotation_z': "RotZ",
 'throttle': "Throttle (%)", 've': "VE", 'vehicle_speed': "Vehicle Speed (mph)"}
 COL_NAMES = ["Value", "MPS"]
-COL_WIDTH = [70, 50]
+COL_WIDTH = [110, 70]
 FONT_SIZE = 20
 
 
