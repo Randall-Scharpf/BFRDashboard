@@ -374,7 +374,7 @@ MPS: N</string>
      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
     </property>
    </widget>
-   <widget class="QWidget" name="DataMonitor" native="true">
+   <widget class="DataMonitor" name="DataMonitor" native="true">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -384,7 +384,7 @@ MPS: N</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,125);</string>
+     <string notr="true">background-color:rgba(0,0,0,0);</string>
     </property>
    </widget>
    <zorder>LeftNumBox</zorder>
@@ -487,6 +487,12 @@ MPS: N</string>
    <class>OnDataMonitorLabel</class>
    <extends>QLabel</extends>
    <header>gui/misc/OnDataMonitorLabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DataMonitor</class>
+   <extends>QWidget</extends>
+   <header>gui/datamonitor/DataMonitor.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

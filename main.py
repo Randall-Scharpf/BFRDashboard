@@ -23,12 +23,12 @@ USE_SYS_TIME = False
 TIME_DISPLAY_FORMAT = '%m/%d/%y %I:%M:%S %p %a'
 OBSOLETE_DATA_SEC = 1
 
-DATA_KEYS = ['battery', 'coolant', 'engine_speed', 'exhaust', 'fan1', 'fuel_pressure', 'fuel_pump', 'gear', 'ignition_timing',
-'injector_duty', 'intake', 'lambda1', 'lambda_target', 'lrt', 'map', 'mass_airflow', 'rotation_x',
-'rotation_y', 'rotation_z', 'throttle', 've', 'vehicle_speed'] # acceleration
+DATA_KEYS = ['acc_x', 'acc_y', 'acc_z', 'acc_magnitude', 'battery', 'brake', 'coolant', 'engine_speed', 'exhaust', 'fan1', 'fuel_pressure', 'fuel_pump', 'gear', 'ignition_timing',
+'injector_duty', 'intake', 'lambda1', 'lambda_target', 'log', 'lrt', 'map', 'mass_airflow', 'rotation_x',
+'rotation_y', 'rotation_z', 'throttle', 've', 'vehicle_speed']
 data_dict = {}
 for key in DATA_KEYS:
-    data_dict[key] = {'value': None, 'prev_update_ts': -1}
+    data_dict[key] = {'value': None, 'prev_update_ts': -1, 'msg_count': 0, 'mps': -1}
 dt_offset = dt.now() - dt.now()
 last_msg_dt = dt.now() - datetime.timedelta(seconds=1)
 msg_count = 0
@@ -41,6 +41,7 @@ def update_data(ts, dict):
     for key, value in dict.items():
         data_dict[key]['value'] = value
         data_dict[key]['prev_update_ts'] = ts
+        data_dict[key]['msg_count'] += 1
 
 @pyqtSlot(float)
 def init_timestamp(timestamp):
@@ -66,7 +67,6 @@ class MainWindow(QMainWindow):
             uic.loadUi("gui/main.ui", self)
         # scale widgets
         globalfonts.scale_size_for_all(self)
-        self.DataMonitor.hide()
         self.OnDataMonitorLabel.on_data_monitor_turned_on.connect(self.__on_data_monitor_turn_on)
         # launch gui update loop
         qtimer = QTimer(self)
@@ -125,12 +125,16 @@ class MainWindow(QMainWindow):
             self.CANConnectionLabel.setText('Connected')
             self.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + 'color: green;' + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
 
-        elapsed_fps_update_seconds = (sys_dt_object - self.__prev_whole_update_dt).total_seconds()
-        if elapsed_fps_update_seconds > 1:
-            global msg_count
-            self.FPSLabel.setText("FPS: " + str(min(99, int(self.__elapsed_updated_frames / elapsed_fps_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_fps_update_seconds))))
-            self.__elapsed_updated_frames = 0
+        elapsed_whole_update_seconds = (sys_dt_object - self.__prev_whole_update_dt).total_seconds()
+        is_whole_update = elapsed_whole_update_seconds > 1
+        if is_whole_update:
+            self.__prev_whole_update_dt = 0
             self.__prev_whole_update_dt = dt.now()
+
+        if is_whole_update:
+            global msg_count
+            self.FPSLabel.setText("FPS: " + str(min(99, int(self.__elapsed_updated_frames / elapsed_whole_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_whole_update_seconds))))
+            self.__elapsed_updated_frames = 0
             msg_count = 0
         self.__elapsed_updated_frames += 1
 
@@ -139,7 +143,11 @@ class MainWindow(QMainWindow):
         self.__prev_update_dt = dt.now()
 
         if self.DataMonitor.isVisible():
-            pass
+            if is_whole_update:
+                for key in DATA_KEYS:
+                    data_dict[key]['mps'] = data_dict[key]['msg_count'] / elapsed_whole_update_seconds
+                    data_dict[key]['msg_count'] = 0
+            self.DataMonitor.update_frame(data_dict)
 
     @pyqtSlot()
     def __on_data_monitor_turn_on(self):
