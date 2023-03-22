@@ -43,7 +43,7 @@ def c_to_f(c):
 class Receive(QRunnable):
     class SignalHelper(QObject):
         update_data = pyqtSignal(float, dict)
-        init_timestamp = pyqtSignal(float)
+        set_timestamp = pyqtSignal(float)
         log_msg = pyqtSignal(str)
     signals = SignalHelper()
 
@@ -53,17 +53,6 @@ class Receive(QRunnable):
 
     def run(self):
         initial_msg = None
-        while self.keep_running and initial_msg == None:
-            if PROCESS_FAKE_MSG:
-                time.sleep(0.001)
-                initial_msg = test_msgid3()
-            else:
-                initial_msg = can0.recv(TIMEOUT)
-            if initial_msg is not None:
-                self.signals.init_timestamp.emit(initial_msg.timestamp)
-                self.parse_message(initial_msg.arbitration_id, initial_msg.timestamp, initial_msg.data)
-                self.signals.log_msg.emit(str(initial_msg))
-
         while self.keep_running:
             if PROCESS_FAKE_MSG:
                 time.sleep(0.001)
@@ -73,8 +62,9 @@ class Receive(QRunnable):
             if PRINT_MSG:
                 print("Recv:", msg)
             if msg is not None:
+                self.signals.set_timestamp.emit(msg.timestamp)
                 self.parse_message(msg.arbitration_id, msg.timestamp, msg.data)
-                self.signals.log_msg.emit(str(initial_msg))
+                self.signals.log_msg.emit(str(msg))
 
     def stop(self):
         self.keep_running = False

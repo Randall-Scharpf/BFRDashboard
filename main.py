@@ -55,7 +55,7 @@ def update_data(ts, dict):
         data_dict[key]['msg_count'] += 1
 
 @pyqtSlot(float)
-def init_timestamp(timestamp):
+def set_timestamp(timestamp):
     global dt_offset, dt_offset_init
     dt_offset = dt.fromtimestamp(timestamp) - dt.now()
     dt_offset_init = True
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         pool = QThreadPool.globalInstance()
         self.receive_thread = Receive()
         self.receive_thread.signals.update_data.connect(update_data)
-        self.receive_thread.signals.init_timestamp.connect(init_timestamp)
+        self.receive_thread.signals.set_timestamp.connect(set_timestamp)
         self.receive_thread.signals.log_msg.connect(self.__write_to_dm_msgtext)
         self.ExitLabel.exit.connect(self.receive_thread.stop)
         self.write_to_dmlogger(0, "Launching receive thread")
