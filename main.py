@@ -19,8 +19,12 @@ LOAD_UI_FROM_RES = False
 FULL_SCREEN = False
 MAX_BLUR_THROTTLE = 50
 
+UPDATE_LOOP_INTERVAL = 10
+
 USE_SYS_TIME = False
 TIME_DISPLAY_FORMAT = '%m/%d/%y %I:%M:%S %p %a'
+TIME_MONITOR_FORMAT = '%m/%d/%y %H:%M:%S'
+TIME_LOG_FORMAT = '[%H:%M:%S]'
 OBSOLETE_DATA_SEC = 1
 
 DATA_KEYS = ['acc_x', 'acc_y', 'acc_z', 'acc_magnitude', 'battery', 'brake', 'coolant', 'engine_speed', 'exhaust', 'fan1', 'fuel_pressure', 'fuel_pump', 'gear', 'ignition_timing',
@@ -28,12 +32,17 @@ DATA_KEYS = ['acc_x', 'acc_y', 'acc_z', 'acc_magnitude', 'battery', 'brake', 'co
 'rotation_y', 'rotation_z', 'throttle', 've', 'vehicle_speed']
 data_dict = {}
 for key in DATA_KEYS:
-    data_dict[key] = {'value': None, 'prev_update_ts': -1, 'msg_count': 0, 'mps': -1}
+    data_dict[key] = {'value': None, 'prev_update_ts': -1, 'obs': -1, 'msg_count': 0, 'mps': -1}
+
+start_dt = dt.now()
 dt_offset = dt.now() - dt.now()
+dt_offset_init = False
 last_msg_dt = dt.now() - datetime.timedelta(seconds=1)
 msg_count = 0
 
-# TODO start time (sys & adjusted), now (sys & adjusted), (optional) last msg (sys & adjusted), offset, elapsed warnings & errors
+elapsed_errors = 0
+elapsed_warnings = 0
+
 
 @pyqtSlot(float, dict)
 def update_data(ts, dict):
@@ -47,18 +56,20 @@ def update_data(ts, dict):
 
 @pyqtSlot(float)
 def init_timestamp(timestamp):
-    global dt_offset
+    global dt_offset, dt_offset_init
     dt_offset = dt.fromtimestamp(timestamp) - dt.now()
+    dt_offset_init = True
 
 
 class MainWindow(QMainWindow):
-    __elapsed_updated_frames = 0
-    __prev_whole_update_dt = dt.now()
-    __prev_update_dt = dt.now()
-
     def __init__(self, parent=None):
         # initialize
-        QMainWindow.__init__(self)
+        super(MainWindow, self).__init__()
+        #
+        self.__elapsed_updated_frames = 0
+        self.__prev_whole_update_dt = dt.now()
+        self.__prev_update_dt = dt.now()
+        self.__log_time = dt.now().strftime("ST" + TIME_LOG_FORMAT)
         self.setWindowFlags(Qt.FramelessWindowHint)
         # load UI
         if LOAD_UI_FROM_RES:
@@ -67,31 +78,38 @@ class MainWindow(QMainWindow):
             uic.loadUi(main_ui, self)
         else:
             uic.loadUi("gui/main.ui", self)
+        self.write_to_dmlogger(0, "Loaded UI to main window")
         # scale widgets
         globalfonts.scale_size_for_all(self)
         self.ToggleDataMonitorLabel.on_toggle_data_monitor.connect(self.__on_toggle_data_monitor)
         # launch gui update loop
         qtimer = QTimer(self)
         qtimer.timeout.connect(self.__update_gui)
-        qtimer.start(10)
+        self.write_to_dmlogger(0, "Launching update loop, interval is " + str(UPDATE_LOOP_INTERVAL) +  "ms")
+        qtimer.start(UPDATE_LOOP_INTERVAL)
         # launch receive
-        print('QThreadPool max thread count is ' + str(QThreadPool.globalInstance().maxThreadCount()))
+        self.write_to_dmlogger(0, "QThreadPool max thread count is " + str(QThreadPool.globalInstance().maxThreadCount()))
         pool = QThreadPool.globalInstance()
         self.receive_thread = Receive()
         self.receive_thread.signals.update_data.connect(update_data)
         self.receive_thread.signals.init_timestamp.connect(init_timestamp)
+        self.receive_thread.signals.log_msg.connect(self.__write_to_dm_msgtext)
         self.ExitLabel.exit.connect(self.receive_thread.stop)
+        self.write_to_dmlogger(0, "Launching receive thread")
         pool.start(self.receive_thread)
         # show self
         if FULL_SCREEN:
             self.showFullScreen()
         else:
             self.show()
-        print("Current screen width: " + str(self.frameGeometry().width()) + ", height: " + str(self.frameGeometry().height()))
+        self.write_to_dmlogger(0, "Current screen width: " + str(self.frameGeometry().width()) + "x" + str(self.frameGeometry().height()))
 
     def __update_gui(self):
         sys_dt_object = dt.now()
         adjusted_dt_object = dt_offset + sys_dt_object
+        self.__log_time = adjusted_dt_object.strftime(TIME_LOG_FORMAT)
+        if not dt_offset_init:
+            self.__log_time = "ST" + self.__log_time
 
         if data_dict['battery']['prev_update_ts'] != -1:
             self.Battery.set_number(data_dict['battery']['value'])
@@ -145,12 +163,24 @@ class MainWindow(QMainWindow):
         self.__prev_update_dt = dt.now()
 
         if self.DataMonitor.isVisible():
-            if is_whole_update:
-                for key in DATA_KEYS:
+            for key in DATA_KEYS:
+                data_dict[key]['obs'] = (adjusted_dt_object - dt.fromtimestamp(data_dict[key]['prev_update_ts'])).total_seconds()
+                if is_whole_update:
                     data_dict[key]['mps'] = data_dict[key]['msg_count'] / elapsed_whole_update_seconds
                     data_dict[key]['msg_count'] = 0
             self.DataMonitor.DataTable1.update_frame(data_dict)
             self.DataMonitor.DataTable2.update_frame(data_dict)
+            # update TimeTable
+            if dt_offset_init:
+                time_table_dict = [(start_dt + dt_offset).strftime(TIME_MONITOR_FORMAT), adjusted_dt_object.strftime(TIME_MONITOR_FORMAT),
+                (last_msg_dt + dt_offset).strftime(TIME_MONITOR_FORMAT), str(dt_offset.total_seconds()), "E " + str(elapsed_errors) + " W " + str(elapsed_warnings)]
+                self.DataMonitor.TimeTable.update_values(time_table_dict)
+            else:
+                time_table_dict = ["(ST) " + (start_dt).strftime(TIME_MONITOR_FORMAT), "(ST) " + sys_dt_object.strftime(TIME_MONITOR_FORMAT),
+                "(ST) " + last_msg_dt.strftime(TIME_MONITOR_FORMAT), str(dt_offset.total_seconds()), "E " + str(elapsed_errors) + " W " + str(elapsed_warnings)]
+                self.DataMonitor.TimeTable.update_values(time_table_dict)
+            self.DataMonitor.MsgText.update_frame()
+            self.DataMonitor.LogText.update_frame()
 
     @pyqtSlot(bool)
     def __on_toggle_data_monitor(self, toggle_cursor):
@@ -160,6 +190,18 @@ class MainWindow(QMainWindow):
         else:
             self.setCursor(Qt.BlankCursor)
 
+    @pyqtSlot(str)
+    def __write_to_dm_msgtext(self, msg):
+        self.DataMonitor.MsgText.push_back_line("<font color=\"gray\">" + self.__log_time + "</font> " + msg)
+
+    @pyqtSlot(int, str)
+    def write_to_dmlogger(self, type, msg):
+        if type == 0:
+            self.DataMonitor.LogText.push_back_line("<font color=\"gray\">" + self.__log_time + "</font> " + msg)
+        elif type == 1:
+            self.DataMonitor.LogText.push_back_line("<font color=\"orange\">[WARNING]" + self.__log_time + "</font> " + msg)
+        else:
+            self.DataMonitor.LogText.push_back_line( "<font color=\"red\">[ERROR]" + self.__log_time + "</font> " + msg)
 
 if __name__ == "__main__":
     app = QApplication([])

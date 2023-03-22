@@ -57,6 +57,13 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="SimpleDataTable" name="TimeTable" native="true">
+          <property name="styleSheet">
+           <string notr="true">background-color:rgba(0,0,0,0);</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -97,7 +104,26 @@
          <height>640</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="VLayout3"/>
+       <layout class="QVBoxLayout" name="VLayout3">
+        <property name="leftMargin">
+         <number>10</number>
+        </property>
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <property name="rightMargin">
+         <number>10</number>
+        </property>
+        <property name="bottomMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="LenCapText" name="MsgText"/>
+        </item>
+        <item>
+         <widget class="LenCapText" name="LogText"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -110,6 +136,17 @@
    <extends>QWidget</extends>
    <header>gui/datamonitor/DataTable.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SimpleDataTable</class>
+   <extends>QWidget</extends>
+   <header>gui/datamonitor/SimpleDataTable.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LenCapText</class>
+   <extends>QTextEdit</extends>
+   <header>gui/datamonitor/LenCapText.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

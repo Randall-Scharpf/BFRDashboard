@@ -44,6 +44,7 @@ class Receive(QRunnable):
     class SignalHelper(QObject):
         update_data = pyqtSignal(float, dict)
         init_timestamp = pyqtSignal(float)
+        log_msg = pyqtSignal(str)
     signals = SignalHelper()
 
     def __init__(self):
@@ -61,6 +62,7 @@ class Receive(QRunnable):
             if initial_msg is not None:
                 self.signals.init_timestamp.emit(initial_msg.timestamp)
                 self.parse_message(initial_msg.arbitration_id, initial_msg.timestamp, initial_msg.data)
+                self.signals.log_msg.emit(str(initial_msg))
 
         while self.keep_running:
             if PROCESS_FAKE_MSG:
@@ -72,6 +74,7 @@ class Receive(QRunnable):
                 print("Recv:", msg)
             if msg is not None:
                 self.parse_message(msg.arbitration_id, msg.timestamp, msg.data)
+                self.signals.log_msg.emit(str(initial_msg))
 
     def stop(self):
         self.keep_running = False
