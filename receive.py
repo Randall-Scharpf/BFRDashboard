@@ -55,7 +55,7 @@ class Receive(QRunnable):
         while self.keep_running:
             if PROCESS_FAKE_MSG:
                 time.sleep(0.001)
-                msg = test_msgid3()
+                msg = test_msgid0()
             else:
                 msg = can0.recv(TIMEOUT)
             if msg is not None:
@@ -76,9 +76,9 @@ class Receive(QRunnable):
             # byte 4-5, Throttle, 16 bit unsigned, scaling 0.0015259 %/bit, range 0 to 99.998 %
             data_dict['throttle'] = (data[4] * 256 + data[5]) * 0.0015259
             # byte 6, Intake Air Temp, 8 bit signed 2's comp, 1 Deg C/bit, -128 to 127 C
-            data_dict['intake'] = c_to_f(unsigned_int_to_signed8[data[6]])
+            data_dict['intake'] = c_to_f(unsigned_int_to_signed8(data[6]))
             # byte 7, Coolant Temp,  8 bit signed 2's comp, scaling 1 Deg C/bit, range -128 to 127 C
-            data_dict['coolant'] = c_to_f(unsigned_int_to_signed8[data[7]])
+            data_dict['coolant'] = c_to_f(unsigned_int_to_signed8(data[7]))
         elif id == MSGID_3:
             # byte 0, Lambda #1, 8 bit unsigned, scaling 0.00390625 Lambda/bit, offset 0.5, range 0.5 to 1.496 Lambda
             data_dict['lambda1'] = data[0] * 0.00390625 + 0.5

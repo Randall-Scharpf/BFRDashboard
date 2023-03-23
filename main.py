@@ -104,14 +104,15 @@ class MainWindow(QMainWindow):
         else:
             self.show()
         self.write_to_dmlogger(0, "Current screen width: " + str(self.frameGeometry().width()) + "x" + str(self.frameGeometry().height()))
+        self.i = 0
 
     def __update_gui(self):
         sys_dt_object = dt.now()
         adjusted_dt_object = dt_offset + sys_dt_object
         self.__log_time = adjusted_dt_object.strftime(TIME_LOG_FORMAT)
+
         if not dt_offset_init:
             self.__log_time = "ST" + self.__log_time
-
         if data_dict['battery']['prev_update_ts'] != -1:
             self.Battery.set_number(data_dict['battery']['value'])
             self.Battery.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['battery']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
@@ -132,9 +133,12 @@ class MainWindow(QMainWindow):
             self.VelocityDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['vehicle_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['throttle']['prev_update_ts'] != -1:
             blur_ratio = min(1, max(0, data_dict['throttle']['value'] / MAX_BLUR_THROTTLE))
-            self.RPMDial.set_blur_effect(blur_ratio)
-            self.AFRDial.set_blur_effect(blur_ratio)
-            self.VelocityDial.set_blur_effect(blur_ratio)
+            self.RPMRadialGradient.blur_ratio = blur_ratio
+            self.LambdaRadialGradient.blur_ratio = blur_ratio
+            self.SpeedRadialGradient.blur_ratio = blur_ratio
+            self.RPMRadialGradient.update()
+            self.LambdaRadialGradient.update()
+            self.SpeedRadialGradient.update()
 
         self.TimeLabel.setText(adjusted_dt_object.strftime(TIME_DISPLAY_FORMAT))
 

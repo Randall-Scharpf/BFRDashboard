@@ -29,7 +29,7 @@ class VelocityDial(AnalogGaugeWidget):
         self.units = ""
         self.initial_scale_fontsize = globalfonts.scaled_dial_size(25)
         self.initial_value_fontsize = globalfonts.scaled_dial_size(50)
-
+        return
         self.effect = QGraphicsDropShadowEffect(self)
         self.effect.setOffset(0, 0)
         self.effect.setColor(QColor(139, 225, 242, 255))

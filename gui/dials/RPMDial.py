@@ -29,10 +29,11 @@ class RPMDial(AnalogGaugeWidget):
         self.units = ""
         self.initial_scale_fontsize = globalfonts.scaled_dial_size(35)
         self.initial_value_fontsize = globalfonts.scaled_dial_size(60)
-
-        self.effect = QGraphicsDropShadowEffect(self)
+        return
+        self.effect = QGraphicsDropShadowEffect(self)  # slow
         self.effect.setOffset(0, 0)
         self.effect.setColor(QColor(139, 225, 242, 255))
+        self.effect.setBlurRadius(50)
         self.setGraphicsEffect(self.effect)
 
     def set_blur_effect(self, blur_ratio):

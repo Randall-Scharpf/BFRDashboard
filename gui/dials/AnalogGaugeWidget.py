@@ -22,11 +22,13 @@ import os
 import sys
 import math
 import globalfonts  # my modification
+import datetime
+from datetime import datetime as dt
 
 try:
     from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication
 
-    from PyQt5.QtGui import QPolygon, QPolygonF, QColor, QPen, QFont, QPainter, QFontMetrics, QConicalGradient, QRadialGradient, QFontDatabase
+    from PyQt5.QtGui import QPolygon, QPolygonF, QColor, QPen, QBrush, QFont, QPainter, QFontMetrics, QConicalGradient, QRadialGradient, QFontDatabase
 
     from PyQt5.QtCore import Qt, QTime, QTimer, QPoint, QPointF, QRect, QSize, QObject, pyqtSignal
 
@@ -46,11 +48,14 @@ class AnalogGaugeWidget(QWidget):
 
     """
     valueChanged = pyqtSignal(int)
+    i = 0
 
     def __init__(self, parent=None, allow_floats=False, scale_floats=False):
         super(AnalogGaugeWidget, self).__init__(parent)
         self.allow_floats = allow_floats
         self.scale_floats = scale_floats
+
+        self.init = False
 
         ################################################################################################
         # DEFAULT TIMER VALUE
@@ -243,33 +248,18 @@ class AnalogGaugeWidget(QWidget):
     def getValue(self):
         return self.value
 
-    ################################################################################################
-    # SET SCALE FONT FAMILY
-    ################################################################################################
     def setScaleFontFamily(self, font):
         self.scale_fontname = str(font)
 
-    ################################################################################################
-    # SET VALUE FONT FAMILY
-    ################################################################################################
     def setValueFontFamily(self, font):
         self.value_fontname = str(font)
 
-    ################################################################################################
-    # SET BIG SCALE COLOR
-    ################################################################################################
     def setBigScaleColor(self, color):
         self.bigScaleMarker = QColor(color)
 
-    ################################################################################################
-    # SET FINE SCALE COLOR
-    ################################################################################################
     def setFineScaleColor(self, color):
         self.fineScaleColor = QColor(color)
 
-    ################################################################################################
-    # GAUGE THEMES
-    ################################################################################################
     def setGaugeTheme(self, Theme=1):
         if Theme == 0 or Theme == None:
             self.set_scale_polygon_colors([[.00, Qt.red],
@@ -745,7 +735,6 @@ class AnalogGaugeWidget(QWidget):
     ################################################################################################
 
     def rescale_method(self):
-        # print("slotMethod")
         ################################################################################################
         # SET WIDTH AND HEIGHT
         ################################################################################################
@@ -791,7 +780,6 @@ class AnalogGaugeWidget(QWidget):
         #
         # if mouse_controlled:
         #     self.valueChanged.emit(int(value))
-
         if value <= self.minValue:
             self.value = self.minValue
         elif value >= self.maxValue:
@@ -1219,9 +1207,6 @@ class AnalogGaugeWidget(QWidget):
                              int(h), Qt.AlignCenter, text)
         # painter.restore()
 
-    ################################################################################################
-    # FINE SCALE MARKERS
-    ################################################################################################
     def create_fine_scaled_marker(self):
         #  Description_dict = 0
         my_painter = QPainter(self)
@@ -1242,9 +1227,6 @@ class AnalogGaugeWidget(QWidget):
                                 scale_line_outer_start, 0)
             my_painter.rotate(steps_size)
 
-    ################################################################################################
-    # VALUE TEXT
-    ################################################################################################
     def create_values_text(self):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.HighQualityAntialiasing)
@@ -1290,10 +1272,6 @@ class AnalogGaugeWidget(QWidget):
         painter.drawText(int(- x - w / 2), int(- y - h / 2), int(w),  # jason: added '-' in front of x & y
                          int(h), Qt.AlignCenter, text)
 
-    ################################################################################################
-    # UNITS TEXT
-    ################################################################################################
-
     def create_units_text(self):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.HighQualityAntialiasing)
@@ -1327,10 +1305,6 @@ class AnalogGaugeWidget(QWidget):
         # print(w, h, x, y, text)
         painter.drawText(int(x - w / 2), int(y - h / 2), int(w),
                          int(h), Qt.AlignCenter, text)
-
-    ################################################################################################
-    # CENTER POINTER
-    ################################################################################################
 
     def draw_big_needle_center_point(self, diameter=30):
         painter = QPainter(self)
@@ -1370,9 +1344,6 @@ class AnalogGaugeWidget(QWidget):
         painter.drawPolygon(colored_scale_polygon)
         # return painter_filled_polygon
 
-    ################################################################################################
-    # CREATE OUTER COVER
-    ################################################################################################
     def draw_outer_circle(self, diameter=30):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -1393,10 +1364,6 @@ class AnalogGaugeWidget(QWidget):
 
         painter.drawPolygon(colored_scale_polygon)
 
-    ################################################################################################
-    # NEEDLE POINTER
-    ################################################################################################
-
     def draw_needle(self):
         painter = QPainter(self)
         # painter.setRenderHint(QtGui.QPainter.HighQualityAntialiasing)
@@ -1410,31 +1377,11 @@ class AnalogGaugeWidget(QWidget):
 
         painter.drawConvexPolygon(self.value_needle[0])
 
-    ###############################################################################################
-    # EVENTS
-    ###############################################################################################
-
-    ################################################################################################
-    # ON WINDOW RESIZE
-    ################################################################################################
     def resizeEvent(self, event):
-        # self.resized.emit()
-        # return super(self.parent, self).resizeEvent(event)
-        # print("resized")
-        # print(self.width())
         self.rescale_method()
-        # self.emit(QtCore.SIGNAL("resize()"))
-        # print("resizeEvent")
 
-    ################################################################################################
-    # ON PAINT EVENT
-    ################################################################################################
-    def paintEvent(self, event):
-        # Main Drawing Event:
-        # Will be executed on every change
-        # vgl http://doc.qt.io/qt-4.8/qt-demos-affine-xform-cpp.html
-        # print("event", event)
-
+    def paintEvent(self, event):  # jason: slow
+        start = dt.now()
         self.draw_outer_circle()
         self.draw_icon_image()
         # colored pie area
@@ -1464,30 +1411,4 @@ class AnalogGaugeWidget(QWidget):
         if self.enable_CenterPoint:
             self.draw_big_needle_center_point(
                 diameter=(self.widget_diameter / 6))
-
-    ###############################################################################################
-    # MOUSE EVENTS
-    ###############################################################################################
-
-    def setMouseTracking(self, flag):
-        def recursive_set(parent):
-            for child in parent.findChildren(QObject):
-                try:
-                    child.setMouseTracking(flag)
-                except:
-                    pass
-                recursive_set(child)
-
-        QWidget.setMouseTracking(self, flag)
-        recursive_set(self)
-
-    def mouseReleaseEvent(self, QMouseEvent):
-        self.NeedleColor = self.NeedleColorReleased
-
-        if not self.use_timer_event:
-            self.update()
-        pass
-
-################################################################################################
-# END ==>
-################################################################################################
+        print(self, (dt.now() - start).total_seconds())

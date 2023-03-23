@@ -27,6 +27,6 @@ def scale_size_for_all(main_win):
     main_win.LogLabel.setStyleSheet(FONT_CSS + WHITE_CSS + TRANSPARENT_CSS + scaled_css_size(25))
     main_win.AFRLabel.setStyleSheet(FONT_CSS + WHITE_CSS + TRANSPARENT_CSS + scaled_css_size(35))
     main_win.RPMLabel.setStyleSheet(FONT_CSS + WHITE_CSS + TRANSPARENT_CSS + scaled_css_size(40))
-    main_win.VelocityLabel.setStyleSheet(FONT_CSS + WHITE_CSS + TRANSPARENT_CSS + scaled_css_size(35))
+    main_win.SpeedLabel.setStyleSheet(FONT_CSS + WHITE_CSS + TRANSPARENT_CSS + scaled_css_size(35))
     main_win.FPSLabel.setStyleSheet(FONT_CSS + WHITE_CSS + TRANSPARENT_CSS + scaled_css_size(25))
     main_win.ErrorBox.setStyleSheet(FONT_CSS + WHITE_CSS + "background-color:rgba(40,40,40,255);" + scaled_css_size(25))

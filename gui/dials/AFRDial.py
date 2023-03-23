@@ -30,7 +30,7 @@ class AFRDial(AnalogGaugeWidget):
         self.initial_scale_fontsize = globalfonts.scaled_dial_size(28)
         self.initial_value_fontsize = globalfonts.scaled_dial_size(55)
         self.setScaleFontFamily("Ubuntu")
-
+        return
         self.effect = QGraphicsDropShadowEffect(self)
         self.effect.setOffset(0, 0)
         self.effect.setColor(QColor(139, 225, 242, 255))
