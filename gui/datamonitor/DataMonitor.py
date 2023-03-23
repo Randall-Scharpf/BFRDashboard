@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QFile
 LOAD_UI_FROM_RES = False
 DATA_TABLE1_KEYS = ['log', 'battery', 'brake', 'coolant', 'engine_speed', 'exhaust', 'gear', 'lambda1', 'throttle', 'vehicle_speed']
 DATA_TABLE2_KEYS = ['acc_x', 'acc_y', 'acc_z', 'acc_magnitude', 'fan1', 'fuel_pressure', 'fuel_pump', 'ignition_timing', 'injector_duty',
-'intake', 'lambda_target', 'lrt', 'map', 'mass_airflow', 'rotation_x', 'rotation_y', 'rotation_z', 've']
+'intake', 'lambda_target', 'lrt', 'map', 'mass_airflow', 'rotation_x', 'rotation_y', 'rotation_z', 've', 'unk']
 TIME_TABLE_TITLES = ["Start time", "Current time", "Last message", "DT offset", "Elapsed erros & warnings"]
 
 

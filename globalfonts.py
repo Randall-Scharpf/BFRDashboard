@@ -3,7 +3,7 @@
 # a scalar applied to the font size of every non-dial widget
 SCALE = 1.0
 # a scalar applied to the font size of every dial widget
-DIAL_SCALE = 1.0 # 0.8 on RP
+DIAL_SCALE = 1.0  # 0.8 on RP
 
 # helper constants to prevent typos
 FONT_CSS = "font-family: Ubuntu;"  # ben's favorite font

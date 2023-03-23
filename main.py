@@ -29,7 +29,7 @@ OBSOLETE_DATA_SEC = 1
 
 DATA_KEYS = ['acc_x', 'acc_y', 'acc_z', 'acc_magnitude', 'battery', 'brake', 'coolant', 'engine_speed', 'exhaust', 'fan1', 'fuel_pressure', 'fuel_pump', 'gear', 'ignition_timing',
 'injector_duty', 'intake', 'lambda1', 'lambda_target', 'log', 'lrt', 'map', 'mass_airflow', 'rotation_x',
-'rotation_y', 'rotation_z', 'throttle', 've', 'vehicle_speed']
+'rotation_y', 'rotation_z', 'throttle', 'unk', 've', 'vehicle_speed']
 data_dict = {}
 for key in DATA_KEYS:
     data_dict[key] = {'value': None, 'prev_update_ts': -1, 'obs': -1, 'msg_count': 0, 'mps': -1}
@@ -94,6 +94,7 @@ class MainWindow(QMainWindow):
         self.receive_thread.signals.update_data.connect(update_data)
         self.receive_thread.signals.set_timestamp.connect(set_timestamp)
         self.receive_thread.signals.log_msg.connect(self.__write_to_dm_msgtext)
+        self.receive_thread.signals.log_text.connect(self.write_to_dmlogger)
         self.ExitLabel.exit.connect(self.receive_thread.stop)
         self.write_to_dmlogger(0, "Launching receive thread")
         pool.start(self.receive_thread)

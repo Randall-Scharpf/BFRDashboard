@@ -9,7 +9,6 @@ import time
 
 PROCESS_FAKE_MSG = True
 fake_msg_num = 0
-PRINT_MSG = False
 
 # analog update time to 20, improve efficiency
 
@@ -45,6 +44,7 @@ class Receive(QRunnable):
         update_data = pyqtSignal(float, dict)
         set_timestamp = pyqtSignal(float)
         log_msg = pyqtSignal(str)
+        log_text = pyqtSignal(int, str)
     signals = SignalHelper()
 
     def __init__(self):
@@ -52,15 +52,12 @@ class Receive(QRunnable):
         self.keep_running = True
 
     def run(self):
-        initial_msg = None
         while self.keep_running:
             if PROCESS_FAKE_MSG:
                 time.sleep(0.001)
                 msg = test_msgid3()
             else:
                 msg = can0.recv(TIMEOUT)
-            if PRINT_MSG:
-                print("Recv:", msg)
             if msg is not None:
                 self.signals.set_timestamp.emit(msg.timestamp)
                 self.parse_message(msg.arbitration_id, msg.timestamp, msg.data)
@@ -82,8 +79,6 @@ class Receive(QRunnable):
             data_dict['intake'] = c_to_f(unsigned_int_to_signed8[data[6]])
             # byte 7, Coolant Temp,  8 bit signed 2's comp, scaling 1 Deg C/bit, range -128 to 127 C
             data_dict['coolant'] = c_to_f(unsigned_int_to_signed8[data[7]])
-            if PRINT_MSG:
-                print("MSGID_1: rpm", data_dict['engine_speed'], "throttle", data_dict['throttle'], "coolant", data_dict['coolant'], "intake", data_dict['intake'])
         elif id == MSGID_3:
             # byte 0, Lambda #1, 8 bit unsigned, scaling 0.00390625 Lambda/bit, offset 0.5, range 0.5 to 1.496 Lambda
             data_dict['lambda1'] = data[0] * 0.00390625 + 0.5
@@ -95,8 +90,6 @@ class Receive(QRunnable):
             data_dict['ignition_timing'] = data[5] * 0.35156 - 17
             # byte 6-7, Battery Volts, 16 bit unsigned, 0.0002455 V/bit, 0 to 16.089 Volts
             data_dict['battery'] = (data[6] * 256 + data[7]) * 0.0002455
-            if PRINT_MSG:
-                print("MSGID_2: lambda1", data_dict['lambda1'], "vehicle speed", data_dict['vehicle_speed'], "battery", data_dict['battery'], "gear", data_dict['gear'], "ignition", data_dict['ignition'])
         elif id == MSGID_4:
             # byte 0-1, Manifold Absolute Pressure, 16 bit unsigned, 0.1 kPa/bit, 0 to 6,553.5 kPa
             data_dict['map'] = (data[0] * 256 + data[1]) * 0.1
@@ -121,8 +114,7 @@ class Receive(QRunnable):
             # byte 2, PrimaryInjDuty [%], 8 bit unsigned, 0.392157 %/bit, 0 to 100 %
             data_dict['injector_duty'] = data[2] * 0.392157
         else:
-            if PRINT_MSG:
-                print("MSGID_UNK, skipped")
+            data_dict['unk'] = 0
         self.signals.update_data.emit(timestamp, data_dict)
 
 
@@ -138,7 +130,6 @@ def test_msgid3():
     if fake_msg_num < 100:
         return None
     return Message(data=bytearray([int(fake_msg_num), 0, int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0]), arbitration_id=MSGID_3, timestamp=0)
-
 
 def test_timer():
     global fake_msg_num
