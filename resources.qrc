@@ -7,5 +7,6 @@
         <file alias="exhaust">gui/resources/exhaust.png</file>
         <file alias="main_ui">gui/main.ui</file>
         <file alias="ubuntu">gui/resources/Ubuntu-Regular.ttf</file>
+        <file alias="data_monitor_ui">gui/datamonitor/data_monitor.ui</file>
     </qresource>
 </RCC>

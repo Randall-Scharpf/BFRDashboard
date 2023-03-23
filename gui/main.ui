@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>BFRDashboard</class>
+ <widget class="QMainWindow" name="BFRDashboard">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -20,6 +20,9 @@
    <font>
     <family>Garamond</family>
    </font>
+  </property>
+  <property name="cursor">
+   <cursorShape>BlankCursor</cursorShape>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -314,19 +317,74 @@
     <property name="geometry">
      <rect>
       <x>1150</x>
-      <y>660</y>
-      <width>111</width>
-      <height>51</height>
+      <y>640</y>
+      <width>110</width>
+      <height>70</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">color: white; font-size : 25px; background-color : rgba(0, 0, 0, 0)</string>
     </property>
     <property name="text">
-     <string>FPS: N</string>
+     <string>FPS: N
+MPS: N</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="ErrorBox" name="ErrorBox">
+    <property name="geometry">
+     <rect>
+      <x>1260</x>
+      <y>160</y>
+      <width>160</width>
+      <height>200</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: white; font-size : 25px; background-color : rgba(40,40,40,255);</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::RichText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="ToggleDataMonitorLabel" name="ToggleDataMonitorLabel">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>120</width>
+      <height>130</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:white;font-size:30px;background-color: rgba(0,0,0,0);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+    </property>
+   </widget>
+   <widget class="DataMonitor" name="DataMonitor" native="true">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>1220</width>
+      <height>660</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgba(0,0,0,0);</string>
     </property>
    </widget>
    <zorder>LeftNumBox</zorder>
@@ -345,6 +403,9 @@
    <zorder>BFRIcon</zorder>
    <zorder>ExitLabel</zorder>
    <zorder>FPSLabel</zorder>
+   <zorder>ErrorBox</zorder>
+   <zorder>DataMonitor</zorder>
+   <zorder>ToggleDataMonitorLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -416,6 +477,22 @@
    <class>ExitLabel</class>
    <extends>QLabel</extends>
    <header>gui/misc/ExitLabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ErrorBox</class>
+   <extends>QLabel</extends>
+   <header>gui/errorbox/ErrorBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DataMonitor</class>
+   <extends>QWidget</extends>
+   <header>gui/datamonitor/DataMonitor.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ToggleDataMonitorLabel</class>
+   <extends>QLabel</extends>
+   <header>gui/misc/ToggleDataMonitorLabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>

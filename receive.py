@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QRunnable, Qt, QThreadPool, pyqtSignal
+from PyQt5.QtCore import QRunnable, Qt, QThreadPool, pyqtSignal, QObject
 from can import Message
 import os
 import can
@@ -9,7 +9,6 @@ import time
 
 PROCESS_FAKE_MSG = True
 fake_msg_num = 0
-PRINT_MSG = True
 
 # analog update time to 20, improve efficiency
 
@@ -25,96 +24,116 @@ if not PROCESS_FAKE_MSG:
 # https://harrisonsand.com/posts/can-on-the-raspberry-pi/
 
 TIMEOUT = 10
-MSGID_1 = 0x01F0A000
-MSGID_2 = 0x01F0A003
+MSGID_0 = 0x01F0A000
+MSGID_3 = 0x01F0A003
+MSGID_4 = 0x01F0A004
+MSGID_5 = 0x01F0A005
+MSGID_6 = 0x01F0A006
 MAX_BLUR_THROTTLE = 50  # percent throttle at which blur reaches max effect
 
 
+def unsigned_int_to_signed8(i):
+    return i if i < 128 else i - 256
+
+def c_to_f(c):
+    return c * 1.8 + 32
+
+
 class Receive(QRunnable):
-    def __init__(self, update_gui, update_timestamp):
-        super().__init__()
+    class SignalHelper(QObject):
+        update_data = pyqtSignal(float, dict)
+        set_timestamp = pyqtSignal(float)
+        log_msg = pyqtSignal(str)
+        log_text = pyqtSignal(int, str)
+    signals = SignalHelper()
+
+    def __init__(self):
+        super(Receive, self).__init__()
         self.keep_running = True
-        self.update_gui = update_gui
-        self.update_timestamp = update_timestamp
 
     def run(self):
         while self.keep_running:
             if PROCESS_FAKE_MSG:
                 time.sleep(0.001)
-                msg = test_msgid2()
+                msg = test_msgid3()
             else:
                 msg = can0.recv(TIMEOUT)
-            if PRINT_MSG:
-                print("Recv:", msg)
-            if msg is None:
-                print('Timeout: occurred, no message.')
-            else:
-                self.parse_message(msg.arbitration_id, msg.data, msg.timestamp)
+            if msg is not None:
+                self.signals.set_timestamp.emit(msg.timestamp)
+                self.parse_message(msg.arbitration_id, msg.timestamp, msg.data)
+                self.signals.log_msg.emit(str(msg))
 
     def stop(self):
         self.keep_running = False
         if not PROCESS_FAKE_MSG:
             os.system('sudo ifconfig can0 down')
 
-    def parse_message(self, id, data, timestamp):
-        if id == MSGID_1:
-            data_dict = {}
+    def parse_message(self, id, timestamp, data):
+        data_dict = {}
+        if id == MSGID_0:
             # byte 0-1, Engine Speed, 16 bit unsigned, scaling 0.39063 rpm/bit, range 0 to 25,599.94 RPM
-            rpm = (data[0] * 256 + data[1]) * 0.39063 / 1000
-            data_dict['rpm'] = rpm
-
+            data_dict['engine_speed'] = (data[0] * 256 + data[1]) * 0.39063 / 1000
             # byte 4-5, Throttle, 16 bit unsigned, scaling 0.0015259 %/bit, range 0 to 99.998 %
-            throttle = (data[4] * 256 + data[5]) * 0.0015259
-            blur_ratio = min(1, max(0, throttle / MAX_BLUR_THROTTLE))
-            data_dict['blur'] = blur_ratio
-
-            # byte 7, Coolant Temp,  8 bit signed 2's comp, scaling 1 Deg C/bit 0, range -128 to 127 C
-            coolant = data[7]
-            if coolant >= 128:
-                coolant -= 128
-            data_dict['coolant'] = coolant
-
-            if PRINT_MSG:
-                print("MSGID_1: rpm", rpm, "throttle", throttle, "coolant", coolant)
-            self.update_gui.emit(data_dict)
-        elif id == MSGID_2:
-            data_dict = {}
+            data_dict['throttle'] = (data[4] * 256 + data[5]) * 0.0015259
+            # byte 6, Intake Air Temp, 8 bit signed 2's comp, 1 Deg C/bit, -128 to 127 C
+            data_dict['intake'] = c_to_f(unsigned_int_to_signed8[data[6]])
+            # byte 7, Coolant Temp,  8 bit signed 2's comp, scaling 1 Deg C/bit, range -128 to 127 C
+            data_dict['coolant'] = c_to_f(unsigned_int_to_signed8[data[7]])
+        elif id == MSGID_3:
             # byte 0, Lambda #1, 8 bit unsigned, scaling 0.00390625 Lambda/bit, offset 0.5, range 0.5 to 1.496 Lambda
-            lambda1 = data[0] * 0.00390625 + 0.5
-            data_dict['lambda'] = lambda1
-
+            data_dict['lambda1'] = data[0] * 0.00390625 + 0.5
             # byte 2-3, Vehicle Speed, 16 bit unsigned, scaling 0.0062865 kph/bit, range 0 to 411.986 km/h
-            speed = (data[2] * 256 + data[3]) * 0.0062865
-            data_dict['speed'] = speed
-
-            # 6-7 Battery Volts 16 bit unsigned 0.0002455 V/bit 0 to 16.089 Volts
-            battery = (data[6] * 256 + data[7]) * 0.0002455
-            data_dict['battery'] = battery
-
-            if PRINT_MSG:
-                print("MSGID_2: lambda1", lambda1, "speed", speed, "battery", battery)
-            self.update_gui.emit(data_dict)
+            data_dict['vehicle_speed'] = (data[2] * 256 + data[3]) * 0.0062865
+            # byte 4, Gear Calculated, 8 bit unsigned, 0 to 255
+            data_dict['gear'] = data[4]
+            # byte 5, Ign Timing, 8 bit unsigned, scaling .35156 Deg/bit, offset -17, range -17 to 72.65Deg
+            data_dict['ignition_timing'] = data[5] * 0.35156 - 17
+            # byte 6-7, Battery Volts, 16 bit unsigned, 0.0002455 V/bit, 0 to 16.089 Volts
+            data_dict['battery'] = (data[6] * 256 + data[7]) * 0.0002455
+        elif id == MSGID_4:
+            # byte 0-1, Manifold Absolute Pressure, 16 bit unsigned, 0.1 kPa/bit, 0 to 6,553.5 kPa
+            data_dict['map'] = (data[0] * 256 + data[1]) * 0.1
+            # byte 2, Volumetric Efficiency, 8 bit unsigned, 1 %/bit, 0 to 255 %
+            data_dict['ve'] = data[2]
+            # byte 3, Fuel Pressure, 8 bit unsigned, 0.580151 PSIg/bit, 0 to 147.939 PSIg
+            data_dict['fuel_pressure'] = data[3] * 0.580151
+            # byte 5, Lambda Target, 8 bit unsigned, 0.00390625 Lambda/bit, offset 0.5, 0.5 to 1.496 Lambda
+            data_dict['lambda_target'] = data[5] * 0.00390625 + 0.5
+            # byte 6
+            byte6_bin = "{:08b}".format(data[6])
+            # bit 0 (lsb), FuelPump, Boolean 0 = false, 1 = true, 0, 0/1
+            data_dict['fuel_pump'] = int(byte6_bin[7])
+            # bit 1 Fan 1 Boolean 0 = false, 1 = true 0 0/1
+            data_dict['fan1'] = int(byte6_bin[6])
+        elif id == MSGID_5:
+            # byte 0-1, Launch Ramp Time [ms], 16 bit unsigned, 10 mS/bit, 0 to 655,350 mS
+            data_dict['lrt'] = (data[0] * 256 + data[1]) * 10
+            # byte 2-3, Mass Airflow [gms/s], 16 bit unsigned, .05 [gms/s] / bit, 0 to 3,276.75 gms/s
+            data_dict['mass_airflow'] = (data[2] * 256 + data[3]) * 0.05
+        elif id == MSGID_5:
+            # byte 2, PrimaryInjDuty [%], 8 bit unsigned, 0.392157 %/bit, 0 to 100 %
+            data_dict['injector_duty'] = data[2] * 0.392157
         else:
-            if PRINT_MSG:
-                print("MSGID_UNK, skipped")
-        self.update_timestamp.emit(timestamp)
+            data_dict['unk'] = 0
+        self.signals.update_data.emit(timestamp, data_dict)
 
 
-def test_msgid1():
+def test_msgid0():
     global fake_msg_num
     fake_msg_num = min(fake_msg_num + 0.1, 255)
-    return Message(data=bytearray([int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0, 0, int(fake_msg_num)]), arbitration_id=MSGID_1)
+    return Message(data=bytearray([int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0, 0, int(fake_msg_num)]), arbitration_id=MSGID_0, timestamp=0)
 
 
-def test_msgid2():
+def test_msgid3():
     global fake_msg_num
     fake_msg_num = min(fake_msg_num + 0.1, 255)
-    return Message(data=bytearray([int(fake_msg_num), 0, int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0]), arbitration_id=MSGID_2)
-
+    if fake_msg_num < 100:
+        return None
+    return Message(data=bytearray([int(fake_msg_num), 0, int(fake_msg_num), 0, 0, 0, int(fake_msg_num), 0]), arbitration_id=MSGID_3, timestamp=0)
 
 def test_timer():
     global fake_msg_num
-    fake_msg_num += 0.005
+    fake_msg_num += 0.001
     if int(fake_msg_num) % 2 == 0:
         return None
-    return Message(data=bytearray([]), arbitration_id=0, timestamp = fake_msg_num * 10)
+    return Message(data=bytearray([]), arbitration_id=0, timestamp = 0)

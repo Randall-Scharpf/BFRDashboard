@@ -28,3 +28,9 @@ class GearWidget(QWidget):
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(QPen(QColor(182, 182, 182, 255), 5, Qt.SolidLine))
         painter.drawRoundedRect(QRectF(0, 0, WIDTH, HEIGHT), 40, 40)
+
+    def set_obsolete(self, obsolete):
+        if obsolete:
+            self.gear.setStyleSheet(globalfonts.FONT_CSS + globalfonts.OBSOLETE_COLOR_CSS + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(250))
+        else:
+            self.gear.setStyleSheet(globalfonts.FONT_CSS + globalfonts.WHITE_CSS + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(250))

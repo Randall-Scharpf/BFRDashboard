@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1220</width>
+    <height>660</height>
+   </rect>
+  </property>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1220</width>
+     <height>660</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="HLayout">
+    <property name="spacing">
+     <number>20</number>
+    </property>
+    <property name="leftMargin">
+     <number>10</number>
+    </property>
+    <property name="topMargin">
+     <number>10</number>
+    </property>
+    <property name="rightMargin">
+     <number>10</number>
+    </property>
+    <property name="bottomMargin">
+     <number>10</number>
+    </property>
+    <item>
+     <widget class="QWidget" name="Col1" native="true">
+      <property name="styleSheet">
+       <string notr="true">background-color:rgba(0,0,0,125);</string>
+      </property>
+      <widget class="QWidget" name="verticalLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>387</width>
+         <height>640</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="VLayout1">
+        <item>
+         <widget class="DataTable" name="DataTable1" native="true">
+          <property name="styleSheet">
+           <string notr="true">background-color:rgba(0,0,0,0);</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="SimpleDataTable" name="TimeTable" native="true">
+          <property name="styleSheet">
+           <string notr="true">background-color:rgba(0,0,0,0);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="Col2" native="true">
+      <property name="styleSheet">
+       <string notr="true">background-color:rgba(0,0,0,125);</string>
+      </property>
+      <widget class="QWidget" name="verticalLayoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>387</width>
+         <height>640</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="VLayout2">
+        <item>
+         <widget class="DataTable" name="DataTable2" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="Col3" native="true">
+      <property name="styleSheet">
+       <string notr="true">background-color:rgba(0,0,0,125);</string>
+      </property>
+      <widget class="QWidget" name="verticalLayoutWidget_3">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>387</width>
+         <height>640</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="VLayout3">
+        <property name="leftMargin">
+         <number>10</number>
+        </property>
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <property name="rightMargin">
+         <number>10</number>
+        </property>
+        <property name="bottomMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="LenCapText" name="MsgText"/>
+        </item>
+        <item>
+         <widget class="LenCapText" name="LogText"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DataTable</class>
+   <extends>QWidget</extends>
+   <header>gui/datamonitor/DataTable.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SimpleDataTable</class>
+   <extends>QWidget</extends>
+   <header>gui/datamonitor/SimpleDataTable.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LenCapText</class>
+   <extends>QTextEdit</extends>
+   <header>gui/datamonitor/LenCapText.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
