@@ -476,25 +476,25 @@ MPS: N</string>
   <customwidget>
    <class>CoolantDisplay</class>
    <extends>QWidget</extends>
-   <header>gui/numdisplay/CoolantDisplay.h</header>
+   <header>gui/numdisplay/NumberDisplayWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ExhaustDisplay</class>
    <extends>QWidget</extends>
-   <header>gui/numdisplay/ExhaustDisplay.h</header>
+   <header>gui/numdisplay/NumberDisplayWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>BatteryDisplay</class>
    <extends>QWidget</extends>
-   <header>gui/numdisplay/BatteryDisplay.h</header>
+   <header>gui/numdisplay/NumberDisplayWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>BrakeDisplay</class>
    <extends>QWidget</extends>
-   <header>gui/numdisplay/BrakeDisplay.h</header>
+   <header>gui/numdisplay/NumberDisplayWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

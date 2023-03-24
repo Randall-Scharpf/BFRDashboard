@@ -9,13 +9,12 @@ HEIGHT_PAD = 10
 
 
 class ErrorBox(QLabel):
-    # 0: hide and do nothing, 1: slide into the screen, 2: stay for a period of time, 3: slide back
-    __state = 0
-    __elapsed_stay_sec = 0
-    __float_x = HIDE_X
-
     def __init__(self, parent=None):
         super(ErrorBox, self).__init__(parent)
+        # 0: hide and do nothing, 1: slide into the screen, 2: stay for a period of time, 3: slide back
+        self.__state = 0
+        self.__elapsed_stay_sec = 0
+        self.__float_x = HIDE_X
         self.setFixedWidth(160)
         self.hide()
 
