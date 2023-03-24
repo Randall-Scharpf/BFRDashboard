@@ -1,6 +1,6 @@
-import globalfonts
 from gui.dials.AnalogGaugeWidget import AnalogGaugeWidget
 from PyQt5.QtGui import QColor
+import globalfonts
 
 
 class Dial(AnalogGaugeWidget):

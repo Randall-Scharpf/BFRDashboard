@@ -17,29 +17,29 @@ FONT_SIZE = 20
 class DataTable(QWidget):
     def __init__(self, parent=None):
         super(DataTable, self).__init__(parent)
-        self.__layout = QGridLayout(self)
-        self.__data_labels = {}
+        self.layout = QGridLayout(self)
+        self.data_labels = {}
 
     def init(self, keys):
         self.keys = keys
         # initialize first row (column names)
         for index, col_name in enumerate(COL_NAMES):
-            self.__layout.addWidget(DataLabel(text=col_name, fixed_width=COL_WIDTH[index]), 1, index + 2)
+            self.layout.addWidget(DataLabel(text=col_name, fixed_width=COL_WIDTH[index]), 1, index + 2)
         # initialize first column (row names)
         for index, row_name in enumerate(keys):
-            self.__layout.addWidget(DataLabel(text=DATA_NAMES[row_name], word_wrap=True), index + 2, 1)
+            self.layout.addWidget(DataLabel(text=DATA_NAMES[row_name], word_wrap=True), index + 2, 1)
         for row, key in enumerate(keys):
-            self.__data_labels[key] = {}
+            self.data_labels[key] = {}
             for col, col_name in enumerate(COL_NAMES):
                 label = DataLabel(text="N", fixed_width=COL_WIDTH[col])
-                self.__layout.addWidget(label, row + 2, col + 2)
-                self.__data_labels[key][col_name] = label
+                self.layout.addWidget(label, row + 2, col + 2)
+                self.data_labels[key][col_name] = label
 
     def update_frame(self, data_dict):
         for key in self.keys:
             data = data_dict[key]
             if data['prev_update_ts'] != -1:
-                self.__data_labels[key]['Value'].set_number(data['value'])
+                self.data_labels[key]['Value'].set_number(data['value'])
                 if data['mps'] != -1:
-                    self.__data_labels[key]['MPS'].set_number(int(data['mps']))
-                    self.__data_labels[key]['Obs'].set_number(max(-99, min(99, data['obs'])))
+                    self.data_labels[key]['MPS'].set_number(int(data['mps']))
+                    self.data_labels[key]['Obs'].set_number(max(-99, min(99, data['obs'])))

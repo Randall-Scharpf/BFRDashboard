@@ -446,8 +446,8 @@ MPS: N</string>
    <zorder>ExitLabel</zorder>
    <zorder>FPSLabel</zorder>
    <zorder>ErrorBox</zorder>
-   <zorder>ToggleDataMonitorLabel</zorder>
    <zorder>DataMonitor</zorder>
+   <zorder>ToggleDataMonitorLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

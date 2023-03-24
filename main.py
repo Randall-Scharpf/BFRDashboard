@@ -66,10 +66,10 @@ class MainWindow(QMainWindow):
         # initialize
         super(MainWindow, self).__init__()
         #
-        self.__elapsed_updated_frames = 0
-        self.__prev_whole_update_dt = dt.now()
-        self.__prev_update_dt = dt.now()
-        self.__log_time = dt.now().strftime("ST" + TIME_LOG_FORMAT)
+        self.elapsed_updated_frames = 0
+        self.prev_whole_update_dt = dt.now()
+        self.prev_update_dt = dt.now()
+        self.log_time = dt.now().strftime("ST" + TIME_LOG_FORMAT)
         self.setWindowFlags(Qt.FramelessWindowHint)
         # load UI
         if LOAD_UI_FROM_RES:
@@ -81,10 +81,10 @@ class MainWindow(QMainWindow):
         self.write_to_dmlogger(0, "Loaded UI to main window")
         # scale widgets
         globalfonts.scale_size_for_all(self)
-        self.ToggleDataMonitorLabel.on_toggle_data_monitor.connect(self.__on_toggle_data_monitor)
+        self.ToggleDataMonitorLabel.on_toggle_data_monitor.connect(self.on_toggle_data_monitor)
         # launch gui update loop
         qtimer = QTimer(self)
-        qtimer.timeout.connect(self.__update_gui)
+        qtimer.timeout.connect(self.update_gui)
         self.write_to_dmlogger(0, "Launching update loop, interval is " + str(UPDATE_LOOP_INTERVAL) +  "ms")
         qtimer.start(UPDATE_LOOP_INTERVAL)
         # launch receive
@@ -93,7 +93,7 @@ class MainWindow(QMainWindow):
         self.receive_thread = Receive()
         self.receive_thread.signals.update_data.connect(update_data)
         self.receive_thread.signals.set_timestamp.connect(set_timestamp)
-        self.receive_thread.signals.log_msg.connect(self.__write_to_dm_msgtext)
+        self.receive_thread.signals.log_msg.connect(self.write_to_dm_msgtext)
         self.receive_thread.signals.log_text.connect(self.write_to_dmlogger)
         self.ExitLabel.exit.connect(self.receive_thread.stop)
         self.write_to_dmlogger(0, "Launching receive thread")
@@ -106,13 +106,13 @@ class MainWindow(QMainWindow):
         self.write_to_dmlogger(0, "Current screen width: " + str(self.frameGeometry().width()) + "x" + str(self.frameGeometry().height()))
         self.i = 0
 
-    def __update_gui(self):
+    def update_gui(self):
         sys_dt_object = dt.now()
         adjusted_dt_object = dt_offset + sys_dt_object
-        self.__log_time = adjusted_dt_object.strftime(TIME_LOG_FORMAT)
+        self.log_time = adjusted_dt_object.strftime(TIME_LOG_FORMAT)
 
         if not dt_offset_init:
-            self.__log_time = "ST" + self.__log_time
+            self.log_time = "ST" + self.log_time
         if data_dict['battery']['prev_update_ts'] != -1:
             self.Battery.set_number(data_dict['battery']['value'])
             self.Battery.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['battery']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
@@ -150,22 +150,22 @@ class MainWindow(QMainWindow):
             self.CANConnectionLabel.setText('Connected')
             self.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + 'color: green;' + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
 
-        elapsed_whole_update_seconds = (sys_dt_object - self.__prev_whole_update_dt).total_seconds()
+        elapsed_whole_update_seconds = (sys_dt_object - self.prev_whole_update_dt).total_seconds()
         is_whole_update = elapsed_whole_update_seconds > 1
         if is_whole_update:
-            self.__prev_whole_update_dt = 0
-            self.__prev_whole_update_dt = dt.now()
+            self.prev_whole_update_dt = 0
+            self.prev_whole_update_dt = dt.now()
 
         if is_whole_update:
             global msg_count
-            self.FPSLabel.setText("FPS: " + str(min(99, int(self.__elapsed_updated_frames / elapsed_whole_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_whole_update_seconds))))
-            self.__elapsed_updated_frames = 0
+            self.FPSLabel.setText("FPS: " + str(min(99, int(self.elapsed_updated_frames / elapsed_whole_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_whole_update_seconds))))
+            self.elapsed_updated_frames = 0
             msg_count = 0
-        self.__elapsed_updated_frames += 1
+        self.elapsed_updated_frames += 1
 
-        elapsed_update_seconds = (sys_dt_object - self.__prev_update_dt).total_seconds()
+        elapsed_update_seconds = (sys_dt_object - self.prev_update_dt).total_seconds()
         self.ErrorBox.update_frame(elapsed_update_seconds)
-        self.__prev_update_dt = dt.now()
+        self.prev_update_dt = dt.now()
 
         if self.DataMonitor.isVisible():
             for key in DATA_KEYS:
@@ -188,7 +188,7 @@ class MainWindow(QMainWindow):
             self.DataMonitor.LogText.update_frame()
 
     @pyqtSlot(bool)
-    def __on_toggle_data_monitor(self, toggle_cursor):
+    def on_toggle_data_monitor(self, toggle_cursor):
         self.DataMonitor.setVisible(not self.DataMonitor.isVisible())
         if self.DataMonitor.isVisible() and toggle_cursor:
             self.setCursor(Qt.ArrowCursor)
@@ -196,17 +196,17 @@ class MainWindow(QMainWindow):
             self.setCursor(Qt.BlankCursor)
 
     @pyqtSlot(str)
-    def __write_to_dm_msgtext(self, msg):
-        self.DataMonitor.MsgText.push_back_line("<font color=\"gray\">" + self.__log_time + "</font> " + msg)
+    def write_to_dm_msgtext(self, msg):
+        self.DataMonitor.MsgText.push_back_line("<font color=\"gray\">" + self.log_time + "</font> " + msg)
 
     @pyqtSlot(int, str)
     def write_to_dmlogger(self, type, msg):
         if type == 0:
-            self.DataMonitor.LogText.push_back_line("<font color=\"gray\">" + self.__log_time + "</font> " + msg)
+            self.DataMonitor.LogText.push_back_line("<font color=\"gray\">" + self.log_time + "</font> " + msg)
         elif type == 1:
-            self.DataMonitor.LogText.push_back_line("<font color=\"orange\">[WARNING]" + self.__log_time + "</font> " + msg)
+            self.DataMonitor.LogText.push_back_line("<font color=\"orange\">[WARNING]" + self.log_time + "</font> " + msg)
         else:
-            self.DataMonitor.LogText.push_back_line( "<font color=\"red\">[ERROR]" + self.__log_time + "</font> " + msg)
+            self.DataMonitor.LogText.push_back_line( "<font color=\"red\">[ERROR]" + self.log_time + "</font> " + msg)
 
 if __name__ == "__main__":
     app = QApplication([])

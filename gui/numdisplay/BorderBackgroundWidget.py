@@ -3,12 +3,6 @@ from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QRectF
 
 
-border_color = QColor(116, 116, 116, 255)
-border_width = 5
-width = 240
-height = 330
-
-
 class BorderBackgroundWidget(QWidget):
     def __init__(self, parent=None):
         super(BorderBackgroundWidget, self).__init__(parent)
@@ -16,6 +10,6 @@ class BorderBackgroundWidget(QWidget):
     def paintEvent(self, e):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.setPen(QPen(border_color, border_width, Qt.SolidLine))
-        painter.drawRoundedRect(QRectF(0, 0, width, height), 40, 40)
-        painter.drawLine(0, height / 2, width, height / 2)
+        painter.setPen(QPen(QColor(116, 116, 116, 255), 5, Qt.SolidLine))
+        painter.drawRoundedRect(QRectF(0, 0, self.width(), self.height()), 40, 40)
+        painter.drawLine(0, self.height() / 2, self.width(), self.height() / 2)
