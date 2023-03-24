@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 5.0.3, 2023-03-23T21:51:06. -->
+<!-- Written by QtCreator 5.0.3, 2023-03-24T14:03:20. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -263,6 +263,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/gui/dials/RadialGradientEffect.py</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/gui/dials/RadialGradientEffect.py</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/gui/dials/RadialGradientEffect.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{9b8f9201-5fbe-4a0e-a405-8f73349abc45}</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/gui/dials/RadialGradientEffect.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
@@ -280,6 +281,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/Users/jasonliu/BFRDashboard/gui/dials/DialWidget.py</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./Users/jasonliu/BFRDashboard/gui/dials/DialWidget.py</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/jasonliu/BFRDashboard/gui/dials/DialWidget.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{175df002-c9e9-4418-82dd-1dd8089c3034}</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Script">/Users/jasonliu/BFRDashboard/gui/dials/DialWidget.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>

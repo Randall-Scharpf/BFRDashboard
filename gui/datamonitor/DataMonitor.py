@@ -24,4 +24,4 @@ class DataMonitor(QWidget):
         self.DataTable2.init(DATA_TABLE2_KEYS)
         self.TimeTable.init(TIME_TABLE_TITLES)
         self.MsgText.init(50, True, fixed_height=400)
-        self.LogText.init(100, False)
+        self.LogText.init(100, True)

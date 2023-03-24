@@ -38,7 +38,7 @@ class ErrorBox(QLabel):
                 self.elapsed_stay_sec = 0
             else:
                 self.float_x -= MOVE_PX_PER_SEC * elapsed_sec
-                self.move(self._loat_x, self.y())
+                self.move(self.float_x, self.y())
         # stay unmoving
         elif self.state == 2:
             if self.elapsed_stay_sec > STAY_TIME:
@@ -55,15 +55,25 @@ class ErrorBox(QLabel):
                 self.move(self.float_x, self.y())
 
     def warn(self, title, msg):
-        self.setText("<font color=\"orange\">" + title + "</font><br>" + msg)
-        self.state = 1
-        self.adjustSize()
-        self.resize(self.width(), self.height() + HEIGHT_PAD)
-        self.show()
+        try:
+            self.setText("<font color=\"orange\">" + title + "</font><br>" + msg)
+            self.state = 1
+            self.adjustSize()
+            self.resize(self.width(), self.height() + HEIGHT_PAD)
+            self.show()
+        except Exception as e:
+            print("Error at ErrorBox.warn()")
+            print("title=" + str(title) + ", msg=" + str(msg))
+            print(traceback.format_exc())
 
     def error(self, title, msg):
-        self.setText("<font color=\"red\">" + title + "</font><br>" + msg)
-        self.state = 1
-        self.adjustSize()
-        self.resize(self.width(), self.height() + HEIGHT_PAD)
-        self.show()
+        try:
+            self.setText("<font color=\"red\">" + title + "</font><br>" + msg)
+            self.state = 1
+            self.adjustSize()
+            self.resize(self.width(), self.height() + HEIGHT_PAD)
+            self.show()
+        except Exception as e:
+            print("Error at ErrorBox.error()")
+            print("title=" + str(title) + ", msg=" + str(msg))
+            print(traceback.format_exc())
