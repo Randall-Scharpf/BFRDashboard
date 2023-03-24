@@ -24,6 +24,7 @@ class GearWidget(QWidget):
         self.gear.setAlignment(Qt.AlignCenter)
 
     def paintEvent(self, e):
+        # paint the border
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(QPen(QColor(182, 182, 182, 255), 5, Qt.SolidLine))

@@ -1,13 +1,13 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from gui.datamonitor.DataLabel import DataLabel
-import globalfonts as gf
 
 
+# a helper table that displays a column of labels
 class SimpleDataTable(QWidget):
     def __init__(self, parent=None):
         super(SimpleDataTable, self).__init__(parent)
         self.layout = QVBoxLayout(self)
+        # the unchanged title of the data, everything before the ':'
         self.titles = []
         self.labels = []
 

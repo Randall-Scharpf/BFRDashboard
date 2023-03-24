@@ -11,10 +11,12 @@ DIGIT_TO_FONTSIZE = {1 : 126, 2 : 106, 3 : 85, 4: 70}
 class NumberDisplayWidget(QWidget):
     def __init__(self, icon_filepath, unit, flipped, allow_float=False, parent=None):
         super(NumberDisplayWidget, self).__init__(parent)
+        # if number is a float or an int
         self.allow_float = allow_float
+        # keeps track of fontsize and color
         self.fontsize_css = gf.scaled_css_size(126)
         self.color_css = gf.WHITE_CSS
-
+        # load icon
         pixmap = QPixmap(icon_filepath)
         pixmap = pixmap.scaledToWidth(ICON_SIZE)
         icon = QLabel(self)
@@ -24,7 +26,7 @@ class NumberDisplayWidget(QWidget):
             icon.setGeometry(24, 84, ICON_SIZE, ICON_SIZE)
         else:
             icon.setGeometry(174, 84, ICON_SIZE, ICON_SIZE)
-
+        # load number label
         self.numberLabel = QLabel(self)
         self.numberLabel.setText("N")
         if flipped:
@@ -33,7 +35,7 @@ class NumberDisplayWidget(QWidget):
             self.numberLabel.setGeometry(6, 0, 180, 168)
         self.numberLabel.setAlignment(Qt.AlignCenter)
         self.repaint_font()
-
+        # load unit label
         self.unitLabel = QLabel(self)
         self.unitLabel.setText(unit)
         self.unitLabel.setStyleSheet(gf.FONT_CSS + gf.WHITE_CSS + gf.TRANSPARENT_CSS + gf.scaled_css_size(50))
@@ -43,6 +45,7 @@ class NumberDisplayWidget(QWidget):
             self.unitLabel.setGeometry(174, 36, 48, 48)
         self.unitLabel.setAlignment(Qt.AlignCenter)
 
+    # called by main update loop to change number label's text
     def set_number(self, num):
         if self.allow_float:
             num = round(num, 1)
@@ -56,6 +59,7 @@ class NumberDisplayWidget(QWidget):
         self.numberLabel.setText(str(num))
         self.repaint_font()
 
+    # helper function, resets self's style sheet
     def repaint_font(self):
         self.numberLabel.setStyleSheet(gf.FONT_CSS + gf.TRANSPARENT_CSS + self.color_css + self.fontsize_css)
 

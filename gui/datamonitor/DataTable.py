@@ -1,7 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QGridLayout
 from gui.datamonitor.DataLabel import DataLabel
-import globalfonts as gf
 
 
 DATA_NAMES = {'acc_x': "AccX (g)", 'acc_y': "AccY (g)", 'acc_z': "AccZ (g)", 'acc_magnitude': "AccM (g)", 'battery': "Bat (V)", 'brake': "Brake (%)",
@@ -10,7 +8,7 @@ DATA_NAMES = {'acc_x': "AccX (g)", 'acc_y': "AccY (g)", 'acc_z': "AccZ (g)", 'ac
 'lrt': "LRT (ms)", 'map': "MAP (kPa)", 'mass_airflow': "MAir (gms/s)", 'rotation_x': "RotX (deg/s)", 'rotation_y': "RotY (deg/s)", 'rotation_z': "RotZ (deg/s)",
 'throttle': "Throt (%)", 'unk': "UNK", 've': "VE (%)", 'vehicle_speed': "VSpd (mph)"}
 COL_NAMES = ["Value", "Obs", "MPS"]
-COL_WIDTH = [90, 60, 60]  # min 80, 50, 50
+COL_WIDTH = [90, 60, 60]
 FONT_SIZE = 20
 
 
@@ -28,6 +26,7 @@ class DataTable(QWidget):
         # initialize first column (row names)
         for index, row_name in enumerate(keys):
             self.layout.addWidget(DataLabel(text=DATA_NAMES[row_name], word_wrap=True), index + 2, 1)
+        # initialize the rest
         for row, key in enumerate(keys):
             self.data_labels[key] = {}
             for col, col_name in enumerate(COL_NAMES):
@@ -35,9 +34,11 @@ class DataTable(QWidget):
                 self.layout.addWidget(label, row + 2, col + 2)
                 self.data_labels[key][col_name] = label
 
+    # called by main upate loop to update gui
     def update_frame(self, data_dict):
         for key in self.keys:
             data = data_dict[key]
+            # if uninitialized, leave gui unchanged ("N")
             if data['prev_update_ts'] != -1:
                 self.data_labels[key]['Value'].set_number(data['value'])
                 if data['mps'] != -1:

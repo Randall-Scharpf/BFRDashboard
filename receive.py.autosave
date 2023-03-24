@@ -59,11 +59,13 @@ class Receive(QRunnable):
                 self.parse_message(msg.arbitration_id, msg.timestamp, msg.data)
                 self.signals.log_msg.emit(str(msg))
 
+    # called by ExitLabel's exit signal
     def stop(self):
         self.keep_running = False
         if not PROCESS_FAKE_MSG:
             os.system('sudo ifconfig can0 down')
 
+    # process a can message
     def parse_message(self, id, timestamp, data):
         data_dict = {}
         if id == MSGID_0:

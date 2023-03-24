@@ -23,91 +23,67 @@ import math
 class AnalogGaugeWidget(QWidget):
     def __init__(self, parent=None, value_float=False, scale_float=False):
         super(AnalogGaugeWidget, self).__init__(parent)
+        # can the value text be a float
         self.value_float = value_float
+        # can the scale numbers be floats
         self.scale_float = scale_float
-
+        # if not value has been initialized
+        self.null_value = True
+        # controls how big the hold around the center is
+        # 16 to completely hide the hole, 6 to have a transparent cocentric circle at the center
+        self.center_hole_size = 16
+        # the larger this number is, the smaller the center knob is
+        self.center_size = 8
+        # helpful variables to customize gauge widget
         self.NeedleColor = QColor(0, 0, 0, 255)
         self.ScaleValueColor = QColor(0, 0, 0, 255)
         self.DisplayValueColor = QColor(0, 0, 0, 255)
+        self.scalaCount = 10
+        self.scale_fontsize = 0
+        self.value_fontsize = 0
+        self.scale_angle_start_value = 135
+        self.scale_angle_size = 270
+        # import Ubuntu font
+        id = QFontDatabase.addApplicationFont(':/res/ubuntu')
+        families = QFontDatabase.applicationFontFamilies(id)
+        self.scale_fontname = families[0]
+        self.value_fontname = families[0]
+        # not very helpful variables
         self.value_needle = QObject
         self.gauge_color_outer_radius_factor = 1
         self.gauge_color_inner_radius_factor = 0.9
-        self.scale_angle_start_value = 135
-        self.scale_angle_size = 270
-        self.scalaCount = 10
         self.scala_subdiv_count = 5
         self.pen = QPen(QColor(0, 0, 0))
-
-        id = QFontDatabase.addApplicationFont(':/res/ubuntu')  # jason: import Ubuntu font
-        if id < 0: print("[AnalogGaugeWidget] Could not import Ubuntu font from resources")
-        families = QFontDatabase.applicationFontFamilies(id)
-
         self.scale_polygon_colors = []
-        self.scale_fontname = families[0]  # jason: use our own font
-        self.scale_fontsize = 0
-
-        self.value_fontname = families[0]
-        self.value_fontsize = 0
         self.text_radius_factor = 0.5
-
         self.needle_scale_factor = 0.8
-
+        # adapt to different sizes
         self.rescale_method()
 
+    # pass in 3 colors: 1st is right outer circle color, 2nd left outer circle color, 3rd inner circle center color
     def setCustomGaugeTheme(self, **colors):
-        if "color1" in colors and len(str(colors['color1'])) > 0:
-            if "color2" in colors and len(str(colors['color2'])) > 0:
-                if "color3" in colors and len(str(colors['color3'])) > 0:
+        self.set_scale_polygon_colors([[.25, QColor(str(colors['color1']))],
+                                       [.5, QColor(
+                                           str(colors['color2']))],
+                                       [.75, QColor(str(colors['color3']))]])
 
-                    self.set_scale_polygon_colors([[.25, QColor(str(colors['color1']))],
-                                                   [.5, QColor(
-                                                       str(colors['color2']))],
-                                                   [.75, QColor(str(colors['color3']))]])
+        self.needle_center_bg = [
+                                [0, QColor(str(colors['color3']))],
+                                [0.322581, QColor(
+                                    str(colors['color1']))],
+                                [0.571429, QColor(
+                                    str(colors['color2']))],
+                                [1, QColor(str(colors['color3']))]
+        ]
 
-                    self.needle_center_bg = [
-                                            [0, QColor(str(colors['color3']))],
-                                            [0.322581, QColor(
-                                                str(colors['color1']))],
-                                            [0.571429, QColor(
-                                                str(colors['color2']))],
-                                            [1, QColor(str(colors['color3']))]
-                    ]
+        self.outer_circle_bg = [
+            [0.0645161, QColor(str(colors['color3']))],
+            [0.36, QColor(
+                str(colors['color1']))],
+            [1, QColor(str(colors['color2']))]
+        ]
 
-                    self.outer_circle_bg = [
-                        [0.0645161, QColor(str(colors['color3']))],
-                        [0.36, QColor(
-                            str(colors['color1']))],
-                        [1, QColor(str(colors['color2']))]
-                    ]
-
-                else:
-
-                    self.set_scale_polygon_colors([[.5, QColor(str(colors['color1']))],
-                                                   [1, QColor(str(colors['color2']))]])
-
-                    self.needle_center_bg = [
-                                            [0, QColor(str(colors['color2']))],
-                                            [1, QColor(str(colors['color1']))]
-                    ]
-
-                    self.outer_circle_bg = [
-                        [0, QColor(str(colors['color2']))],
-                        [1, QColor(str(colors['color2']))]
-                    ]
-
-            else:
-
-                self.set_scale_polygon_colors(
-                    [[1, QColor(str(colors['color1']))]])
-
-                self.needle_center_bg = [
-                                        [1, QColor(str(colors['color1']))]
-                ]
-
-                self.outer_circle_bg = [
-                    [1, QColor(str(colors['color1']))]
-                ]
-
+    # rescale widget depending on given size
     def rescale_method(self):
         if self.width() <= self.height():
             self.widget_diameter = self.width()
@@ -123,13 +99,16 @@ class AnalogGaugeWidget(QWidget):
             QPoint(2, int(- self.widget_diameter / 2 * self.needle_scale_factor))
         ])])
 
+    # not sure what it does, helper method
     def change_value_needle_style(self, design):
         # prepared for multiple needle instrument
         self.value_needle = []
         for i in design:
             self.value_needle.append(i)
 
+    # called by main update loop, update changes to gui
     def updateValue(self, value, mouse_controlled=False):
+        self.null_value = False
         if value <= self.minValue:
             self.value = self.minValue
         elif value >= self.maxValue:
@@ -138,10 +117,11 @@ class AnalogGaugeWidget(QWidget):
             self.value = value
         self.update()
 
+    # not sure what it does, helper method
     def set_scale_polygon_colors(self, color_array):
         if 'list' in str(type(color_array)):
             self.scale_polygon_colors = color_array
-        elif color_array == None:
+        elif color_array is None:
             self.scale_polygon_colors = [[.0, Qt.transparent]]
         else:
             self.scale_polygon_colors = [[.0, Qt.transparent]]
@@ -262,13 +242,14 @@ class AnalogGaugeWidget(QWidget):
         text_radius_factor = 0.8
         text_radius = self.widget_diameter / 2 * text_radius_factor
 
-        scale_per_div = (float(self.maxValue) - self.minValue) / self.scalaCount  # jason: int to float
+        # jason: allows float scales
+        scale_per_div = (float(self.maxValue) - self.minValue) / self.scalaCount
 
         angle_distance = (float(self.scale_angle_size) /
                           float(self.scalaCount))
         for i in range(self.scalaCount + 1):
             # text = str(int((self.maxValue - self.minValue) / self.scalaCount * i))
-            if self.scale_float:  # jason: int to float
+            if self.scale_float:
                 text = str(float(self.minValue + scale_per_div * i))
             else:
                 text = str(int(self.minValue + scale_per_div * i))
@@ -327,10 +308,12 @@ class AnalogGaugeWidget(QWidget):
 
         # angle_distance = (float(self.scale_angle_size) / float(self.scalaCount))
         # for i in range(self.scalaCount + 1):
-        if self.value_float:  # jason: int to float
+        if self.value_float:
             text = str(round(float(self.value), 1))
         else:
             text = str(int(self.value))
+        if self.null_value:
+            text = "N"
         w = fm.width(text) + 1
         h = fm.height()
         painter.setFont(QFont(self.value_fontname,
@@ -348,7 +331,8 @@ class AnalogGaugeWidget(QWidget):
         y = text_radius * math.sin(math.radians(angle))
         # print(w, h, x, y, text)
 
-        painter.drawText(int(- x - w / 2), int(- y - h / 2), int(w),  # jason: added '-' in front of x & y
+        # jason: added '-' in front of x & y to move value text above the center instead of below
+        painter.drawText(int(- x - w / 2), int(- y - h / 2), int(w),
                          int(h), Qt.AlignCenter, text)
 
     def draw_big_needle_center_point(self, diameter=30):
@@ -367,7 +351,7 @@ class AnalogGaugeWidget(QWidget):
 
         # create_polygon_pie(self, outer_radius, inner_raduis, start, lenght)
         colored_scale_polygon = self.create_polygon_pie(
-            ((self.widget_diameter / 8) - (self.pen.width() / 2)),  # jason: change '8' for circle diameter
+            ((self.widget_diameter / self.center_size) - (self.pen.width() / 2)),
             0,
             self.scale_angle_start_value, 360, False)
 
@@ -397,7 +381,7 @@ class AnalogGaugeWidget(QWidget):
         painter.setPen(Qt.NoPen)
         colored_scale_polygon = self.create_polygon_pie(
             ((self.widget_diameter / 2) - (self.pen.width())),
-            (self.widget_diameter / 6), # jason: make the '6' to something very small
+            (self.widget_diameter / self.center_hole_size),
             self.scale_angle_start_value / 10, 360, False)
 
         radialGradient = QRadialGradient(QPointF(0, 0), self.width())
@@ -425,7 +409,9 @@ class AnalogGaugeWidget(QWidget):
     def resizeEvent(self, event):
         self.rescale_method()
 
-    def paintEvent(self, event):  # jason: slow 3,3,5ms
+    # paint event, called every main update loop, runs rather slow
+    # rpm dial: 5-6ms, speed & lambda dial: 3ms
+    def paintEvent(self, event):
         self.draw_outer_circle()
         # colored pie area
         self.draw_filled_polygon()

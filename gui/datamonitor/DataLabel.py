@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 import globalfonts as gf
 
 
+# a helper label
 class DataLabel(QLabel):
     def __init__(self, text="", font_size=20, align_center=False, fixed_width=None, word_wrap=False, parent=None):
         super(DataLabel, self).__init__(parent)
