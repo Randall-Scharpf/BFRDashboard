@@ -2,6 +2,14 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QColor, QPainter, QRadialGradient
 from PyQt5.QtCore import Qt, QPoint
 
+'''
+self.effect = QGraphicsDropShadowEffect(self)  # slow
+self.effect.setOffset(0, 0)
+self.effect.setColor(QColor(139, 225, 242, 255))
+self.effect.setBlurRadius(50)
+self.setGraphicsEffect(self.effect)
+'''
+
 
 COLOR_MIN_RAD = 0.0
 COLOR_SLOPE = 0.8

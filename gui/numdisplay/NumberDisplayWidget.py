@@ -12,13 +12,12 @@ DIGIT_TO_FONTSIZE = {1 : 126, 2 : 106, 3 : 85, 4: 70}
 
 
 class NumberDisplayWidget(QWidget):
-    fontsize_css = globalfonts.scaled_css_size(126)
-    color_css = globalfonts.WHITE_CSS
-    prev_num_digits = 1
-
     def __init__(self, icon_filepath, unit, flipped, allow_floats=False, parent=None):
         super(NumberDisplayWidget, self).__init__(parent)
         self.allow_floats = allow_floats
+        self.fontsize_css = globalfonts.scaled_css_size(126)
+        self.color_css = globalfonts.WHITE_CSS
+        self.prev_num_digits = 1
 
         pixmap = QPixmap(icon_filepath)
         pixmap = pixmap.scaledToWidth(icon_size)

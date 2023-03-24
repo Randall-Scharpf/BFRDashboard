@@ -126,11 +126,11 @@ class MainWindow(QMainWindow):
             self.Gear.gear.setText(str(data_dict['gear']['value']))
             self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['gear']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['lambda1']['prev_update_ts'] != -1:
-            self.AFRDial.updateValue(data_dict['lambda1']['value'])
-            self.AFRDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['lambda1']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
+            self.LambdaDial.updateValue(data_dict['lambda1']['value'])
+            self.LambdaDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['lambda1']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['vehicle_speed']['prev_update_ts'] != -1:
-            self.VelocityDial.updateValue(data_dict['vehicle_speed']['value']) # TODO change velocity to speed
-            self.VelocityDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['vehicle_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
+            self.SpeedDial.updateValue(data_dict['vehicle_speed']['value'])
+            self.SpeedDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['vehicle_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_DATA_SEC)
         if data_dict['throttle']['prev_update_ts'] != -1:
             blur_ratio = min(1, max(0, data_dict['throttle']['value'] / MAX_BLUR_THROTTLE))
             self.RPMRadialGradient.blur_ratio = blur_ratio

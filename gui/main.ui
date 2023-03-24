@@ -36,7 +36,7 @@
      <family>Garamond</family>
     </font>
    </property>
-   <widget class="VelocityDial" name="VelocityDial" native="true">
+   <widget class="SpeedDial" name="SpeedDial" native="true">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -46,7 +46,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="AFRDial" name="AFRDial" native="true">
+   <widget class="LambdaDial" name="LambdaDial" native="true">
     <property name="geometry">
      <rect>
       <x>765</x>
@@ -104,7 +104,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="AFRLabel">
+   <widget class="QLabel" name="LambdaLabel">
     <property name="geometry">
      <rect>
       <x>915</x>
@@ -430,12 +430,12 @@ MPS: N</string>
    <zorder>SpeedRadialGradient</zorder>
    <zorder>LambdaRadialGradient</zorder>
    <zorder>LeftNumBox</zorder>
-   <zorder>VelocityDial</zorder>
-   <zorder>AFRDial</zorder>
+   <zorder>SpeedDial</zorder>
+   <zorder>LambdaDial</zorder>
    <zorder>RPMDial</zorder>
    <zorder>RPMLabel</zorder>
    <zorder>SpeedLabel</zorder>
-   <zorder>AFRLabel</zorder>
+   <zorder>LambdaLabel</zorder>
    <zorder>Gear</zorder>
    <zorder>RightNumBox</zorder>
    <zorder>TimeLabel</zorder>
@@ -461,24 +461,6 @@ MPS: N</string>
   </widget>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>RPMDial</class>
-   <extends>QWidget</extends>
-   <header>gui/dials/RPMDial.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>VelocityDial</class>
-   <extends>QWidget</extends>
-   <header>gui/dials/VelocityDial.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>AFRDial</class>
-   <extends>QWidget</extends>
-   <header>gui/dials/AFRDial.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>GearWidget</class>
    <extends>QWidget</extends>
@@ -540,6 +522,24 @@ MPS: N</string>
    <class>RadialGradientEffect</class>
    <extends>QWidget</extends>
    <header>gui/dials/RadialGradientEffect.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RPMDial</class>
+   <extends>QWidget</extends>
+   <header>gui/dials/DialWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LambdaDial</class>
+   <extends>QWidget</extends>
+   <header>gui/dials/DialWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SpeedDial</class>
+   <extends>QWidget</extends>
+   <header>gui/dials/DialWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
