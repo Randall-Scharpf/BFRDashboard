@@ -33,7 +33,7 @@ DISCONNECTION_THRESHOLD = 1
 # all the data we want to keep track of
 DATA_KEYS = ['acc_x', 'acc_y', 'acc_z', 'acc_magnitude', 'battery', 'brake', 'coolant', 'engine_speed', 'exhaust', 'fan1', 'fuel_pressure', 'fuel_pump', 'gear', 'ignition_timing',
 'injector_duty', 'intake', 'lambda1', 'lambda_target', 'log', 'lrt', 'map', 'mass_airflow', 'rotation_x',
-'rotation_y', 'rotation_z', 'throttle', 'unk', 've', 'vehicle_speed']
+'rotation_y', 'rotation_z', 'sd_status', 'switch', 'throttle', 'unk', 've', 'vehicle_speed']
 
 # main data structure
 data_dict = {}
@@ -199,6 +199,17 @@ class MainWindow(QMainWindow):
                 self.elapsed_updated_frames = 0
                 msg_count = 0
             self.elapsed_updated_frames += 1
+            # check sd status
+            if data_dict['sd_status']['value'] != 0 and data_dict['sd_status']['prev_update_ts'] != -1:
+                self.handle_error('SD Status',
+                "Error at update_gui() section 3 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),
+                "sd_status=" + str(data_dict['sd_status']['value']),
+                "SD Status not 0",
+                traceback.format_exc())
+            # check if switch is flipped
+            if data_dict['switch']['value'] == 0:
+                self.on_toggle_data_monitor(False)
+                data_dict['switch']['value'] = None
         except Exception as e:
             self.handle_error(type(e).__name__,
             "Error at update_gui() section 3 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),

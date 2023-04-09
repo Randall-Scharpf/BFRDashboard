@@ -6,7 +6,7 @@ DATA_NAMES = {'acc_x': "AccX (g)", 'acc_y': "AccY (g)", 'acc_z': "AccZ (g)", 'ac
 'coolant': "Cool (F)", 'engine_speed': "ESpd (rpm)", 'exhaust': "EGT (F)", 'fan1': "Fan (bool)", 'fuel_pressure': "FPres (PSIg)", 'fuel_pump': "FPump (bool)", 'gear': "Gear",
 'ignition_timing': "IgnT (Deg)", 'injector_duty': "InjD (%)", 'intake': "IAT (F)", 'lambda1': "Lambda", 'lambda_target': "LambdaT", 'log': "Log",
 'lrt': "LRT (ms)", 'map': "MAP (kPa)", 'mass_airflow': "MAir (gms/s)", 'rotation_x': "RotX (deg/s)", 'rotation_y': "RotY (deg/s)", 'rotation_z': "RotZ (deg/s)",
-'throttle': "Throt (%)", 'unk': "UNK", 've': "VE (%)", 'vehicle_speed': "VSpd (mph)"}
+'sd_status': "SD Status", 'throttle': "Throt (%)", 'unk': "UNK", 've': "VE (%)", 'vehicle_speed': "VSpd (mph)"}
 COL_NAMES = ["Value", "Obs", "MPS"]
 COL_WIDTH = [90, 60, 60]
 FONT_SIZE = 20

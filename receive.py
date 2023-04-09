@@ -20,7 +20,9 @@ MSGID_0 = 0x01F0A000
 MSGID_3 = 0x01F0A003
 MSGID_4 = 0x01F0A004
 MSGID_5 = 0x01F0A005
-MSGID_6 = 0x01F0A006
+MSGID_6 = 0x00DA5400
+MSGID_7 = 0x00DA5401
+MSGID_8 = 0x00DA5402
 
 
 def unsigned_int_to_signed8(i):
@@ -120,6 +122,16 @@ class Receive(QRunnable):
             elif id == MSGID_5:
                 # byte 2, PrimaryInjDuty [%], 8 bit unsigned, 0.392157 %/bit, 0 to 100 %
                 data_dict['injector_duty'] = data[2] * 0.392157
+            elif id == MSGID_6:
+                # Bytes 0-3: first four characters of log name, as ASCII, Byte 4: SD status, 0 if all is well
+                data_dict['log'] = chr(data[0]) + chr(data[1]) + chr(data[2]) + chr(data[3])
+                data_dict['sd_status'] = data[4]
+            elif id == MSGID_7:
+                # Bytes 0-1: Exhaust gas temperature, signed, MSB first, scaling 0.0625
+                data_dict['exhaust'] = (data[0] * 256 + data[1]) * 0.0625
+            elif id == MSGID_8:
+                # Byte 0: Index of which button was pressed. 0 for GUI switch button, 1 for other button
+                data_dict['switch'] = data[0]
             else:
                 data_dict['unk'] = 0
             self.signals.update_data.emit(timestamp, data_dict)
