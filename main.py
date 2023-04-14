@@ -150,6 +150,9 @@ class MainWindow(QMainWindow):
             if data_dict['gear']['prev_update_ts'] != -1:
                 self.Gear.gear.setText(str(data_dict['gear']['value']))
                 self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['gear']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
+            if data_dict['brake']['prev_update_ts'] != -1:
+                self.Gear.gear.setText(str(data_dict['brake']['value']))
+                self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['brake']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
             if data_dict['lambda1']['prev_update_ts'] != -1:
                 self.LambdaDial.updateValue(data_dict['lambda1']['value'])
                 self.LambdaDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['lambda1']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)

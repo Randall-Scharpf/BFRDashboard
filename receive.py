@@ -23,6 +23,7 @@ MSGID_5 = 0x01F0A005
 MSGID_6 = 0x00DA5400
 MSGID_7 = 0x00DA5401
 MSGID_8 = 0x00DA5402
+MSGID_9 = 0x01F0A002
 
 
 def unsigned_int_to_signed8(i):
@@ -132,6 +133,9 @@ class Receive(QRunnable):
             elif id == MSGID_8:
                 # Byte 0: Index of which button was pressed. 0 for GUI switch button, 1 for other button
                 data_dict['switch'] = data[0]
+            elif id == MSGID_9:
+                # Byte 0-1: Label ADCR18, 16 bit unsigned, scaling 0.00007782 range 0 to 5.0999 V
+                data_dict['brake'] = (data[0] * 256 + data[1]) * 0.00007782 / 5.0999 * 100
             else:
                 data_dict['unk'] = 0
             self.signals.update_data.emit(timestamp, data_dict)
