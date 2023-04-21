@@ -157,8 +157,8 @@ class MainWindow(QMainWindow):
                     self.Gear.gear.setText(str(data_dict['gear']['value']))
                 self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['gear']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
             if data_dict['fuel_pressure']['prev_update_ts'] != -1:
-                self.Gear.gear.setText(str(data_dict['fuel_pressure']['value']))
-                self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['fuel_pressure']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
+                self.Brake.set_number(data_dict['fuel_pressure']['value'])
+                self.Brake.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['fuel_pressure']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
             if data_dict['lambda1']['prev_update_ts'] != -1:
                 self.LambdaDial.updateValue(data_dict['lambda1']['value'])
                 self.LambdaDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['lambda1']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
@@ -210,7 +210,7 @@ class MainWindow(QMainWindow):
                 msg_count = 0
             self.elapsed_updated_frames += 1
             # check sd status
-            if data_dict['sd_status']['value'] != 0 and data_dict['sd_status']['prev_update_ts'] != -1:
+            if data_dict['sd_status']['prev_update_ts'] != -1 and data_dict['sd_status']['value'] == 0:
                 self.handle_error('SD Status',
                 "Error at update_gui() section 3 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),
                 "sd_status=" + str(data_dict['sd_status']['value']),
