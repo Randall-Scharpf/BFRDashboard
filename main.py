@@ -174,6 +174,8 @@ class MainWindow(QMainWindow):
                     self.RPMRadialGradient.update()
                     self.LambdaRadialGradient.update()
                     self.SpeedRadialGradient.update()
+            if data_dict['log']['prev_update_ts'] != -1:
+                self.LogLabel.setText(data_dict['log']['value'])
         except Exception as e:
             self.handle_error(type(e).__name__,
             "Error at update_gui() section 2 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),
