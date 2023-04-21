@@ -165,17 +165,16 @@ class MainWindow(QMainWindow):
             if data_dict['vehicle_speed']['prev_update_ts'] != -1:
                 self.SpeedDial.updateValue(data_dict['vehicle_speed']['value'])
                 self.SpeedDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['vehicle_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if data_dict['throttle']['prev_update_ts'] != -1:
+            if THROTTLE_EFFECT and data_dict['throttle']['prev_update_ts'] != -1:
                 blur_ratio = min(1, max(0, data_dict['throttle']['value']))
                 self.RPMRadialGradient.blur_ratio = blur_ratio
                 self.LambdaRadialGradient.blur_ratio = blur_ratio
                 self.SpeedRadialGradient.blur_ratio = blur_ratio
-                if THROTTLE_EFFECT:
-                    self.RPMRadialGradient.update()
-                    self.LambdaRadialGradient.update()
-                    self.SpeedRadialGradient.update()
+                self.RPMRadialGradient.update()
+                self.LambdaRadialGradient.update()
+                self.SpeedRadialGradient.update()
             if data_dict['log']['prev_update_ts'] != -1:
-                self.LogLabel.setText(data_dict['log']['value'])
+                self.LogLabel.setText("Log: " + str(data_dict['log']['value']))
         except Exception as e:
             self.handle_error(type(e).__name__,
             "Error at update_gui() section 2 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),

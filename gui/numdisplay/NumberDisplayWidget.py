@@ -38,11 +38,16 @@ class NumberDisplayWidget(QWidget):
         # load unit label
         self.unitLabel = QLabel(self)
         self.unitLabel.setText(unit)
-        self.unitLabel.setStyleSheet(gf.FONT_CSS + gf.WHITE_CSS + gf.TRANSPARENT_CSS + gf.scaled_css_size(50))
+        unit_size = 50
+        unit_width = 48
+        if len(unit) == 4:
+            unit_size = 30
+            unit_width = 68
+        self.unitLabel.setStyleSheet(gf.FONT_CSS + gf.WHITE_CSS + gf.TRANSPARENT_CSS + gf.scaled_css_size(unit_size))
         if flipped:
-            self.unitLabel.setGeometry(24, 36, 48, 48)
+            self.unitLabel.setGeometry(24, 36, unit_width, 48)
         else:
-            self.unitLabel.setGeometry(174, 36, 48, 48)
+            self.unitLabel.setGeometry(174, 36, unit_width, 48)
         self.unitLabel.setAlignment(Qt.AlignCenter)
 
     # called by main update loop to change number label's text
@@ -78,7 +83,7 @@ class BatteryDisplay(NumberDisplayWidget):
 
 class BrakeDisplay(NumberDisplayWidget):
     def __init__(self, parent=None):
-        super().__init__(icon_filepath=":/res/brake", unit="%", flipped=True, allow_float=False, parent=parent)
+        super().__init__(icon_filepath=":/res/fuel_pressure", unit="PSIg", flipped=True, allow_float=False, parent=parent)
 
 
 class CoolantDisplay(NumberDisplayWidget):

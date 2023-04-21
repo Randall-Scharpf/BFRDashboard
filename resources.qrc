@@ -8,5 +8,6 @@
         <file alias="main_ui">gui/main.ui</file>
         <file alias="ubuntu">gui/resources/Ubuntu-Regular.ttf</file>
         <file alias="data_monitor_ui">gui/datamonitor/data_monitor.ui</file>
+        <file alias="fuel_pressure">gui/resources/fuel_pressure.png</file>
     </qresource>
 </RCC>
