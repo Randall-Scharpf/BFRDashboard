@@ -16,4 +16,7 @@ class DataLabel(QLabel):
         self.setWordWrap(word_wrap)
 
     def set_number(self, num, round_dec_place=2):
-        self.setText(str(round(num, round_dec_place)))
+        if isinstance(num, str):
+            self.setText(num)
+        else:
+            self.setText(str(round(num, round_dec_place)))
