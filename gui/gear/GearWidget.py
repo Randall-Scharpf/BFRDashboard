@@ -18,7 +18,7 @@ class GearWidget(QWidget):
         label.setAlignment(Qt.AlignCenter)
 
         self.gear = QLabel(self)
-        self.gear.setText("N")
+        self.gear.setText("?")
         self.gear.setStyleSheet(gf.FONT_CSS + gf.WHITE_CSS + gf.TRANSPARENT_CSS + gf.scaled_css_size(250))
         self.gear.setGeometry(0, 85, WIDTH, 200)
         self.gear.setAlignment(Qt.AlignCenter)

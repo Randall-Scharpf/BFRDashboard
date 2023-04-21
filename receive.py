@@ -4,7 +4,7 @@ import os, can, time, traceback
 
 
 # for debugging only, set to false on release
-PROCESS_FAKE_MSG = True
+PROCESS_FAKE_MSG = False
 fake_msg_num = 0
 
 # open up can0 channel, reference RS485 manual: https://www.waveshare.com/w/upload/2/29/RS485-CAN-HAT-user-manuakl-en.pdf

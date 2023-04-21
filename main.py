@@ -15,11 +15,14 @@ import resources, globalfonts, sys, datetime, traceback
 
 
 # debugging constants, should be set to true in release
-LOAD_UI_FROM_RES = False
-FULL_SCREEN = False
+LOAD_UI_FROM_RES = True
+FULL_SCREEN = True
 
 # 1000 / interval = theoretical FPS cap
 UPDATE_LOOP_INTERVAL = 10
+
+# do throttle effect
+THROTTLE_EFFECT = False
 
 # time related
 TIME_DISPLAY_FORMAT = '%m/%d/%y %I:%M:%S %p %a'
@@ -148,11 +151,14 @@ class MainWindow(QMainWindow):
                 self.RPMDial.updateValue(data_dict['engine_speed']['value'])
                 self.RPMDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['engine_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
             if data_dict['gear']['prev_update_ts'] != -1:
-                self.Gear.gear.setText(str(data_dict['gear']['value']))
+                if data_dict['gear']['value'] == 0:
+                    self.Gear.gear.setText("N")
+                else:
+                    self.Gear.gear.setText(str(data_dict['gear']['value']))
                 self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['gear']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if data_dict['brake']['prev_update_ts'] != -1:
-                self.Gear.gear.setText(str(data_dict['brake']['value']))
-                self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['brake']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
+            if data_dict['fuel_pressure']['prev_update_ts'] != -1:
+                self.Gear.gear.setText(str(data_dict['fuel_pressure']['value']))
+                self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['fuel_pressure']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
             if data_dict['lambda1']['prev_update_ts'] != -1:
                 self.LambdaDial.updateValue(data_dict['lambda1']['value'])
                 self.LambdaDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['lambda1']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
@@ -164,9 +170,10 @@ class MainWindow(QMainWindow):
                 self.RPMRadialGradient.blur_ratio = blur_ratio
                 self.LambdaRadialGradient.blur_ratio = blur_ratio
                 self.SpeedRadialGradient.blur_ratio = blur_ratio
-                self.RPMRadialGradient.update()
-                self.LambdaRadialGradient.update()
-                self.SpeedRadialGradient.update()
+                if THROTTLE_EFFECT:
+                    self.RPMRadialGradient.update()
+                    self.LambdaRadialGradient.update()
+                    self.SpeedRadialGradient.update()
         except Exception as e:
             self.handle_error(type(e).__name__,
             "Error at update_gui() section 2 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),
