@@ -59,6 +59,8 @@ class AnalogGaugeWidget(QWidget):
         self.needle_scale_factor = 0.8
         # adapt to different sizes
         self.rescale_method()
+        # QPainter(self) = QPainter(self)
+        self.generate_polygons()
 
     # pass in 3 colors: 1st is right outer circle color, 2nd left outer circle color, 3rd inner circle center color
     def setCustomGaugeTheme(self, **colors):
@@ -85,6 +87,7 @@ class AnalogGaugeWidget(QWidget):
 
     # rescale widget depending on given size
     def rescale_method(self):
+        # print("rescale")
         if self.width() <= self.height():
             self.widget_diameter = self.width()
         else:
@@ -98,6 +101,23 @@ class AnalogGaugeWidget(QWidget):
                    2 * self.needle_scale_factor - 6)),
             QPoint(2, int(- self.widget_diameter / 2 * self.needle_scale_factor))
         ])])
+        self.generate_polygons()
+
+    def generate_polygons(self):
+        self.outer_circle_polygon = self.create_polygon_pie(
+            ((self.widget_diameter / 2) - (self.pen.width())),
+            (self.widget_diameter / self.center_hole_size),
+            self.scale_angle_start_value / 10, 360, False)
+        self.filled_polygon_polygon = self.create_polygon_pie(
+            ((self.widget_diameter / 2) - (self.pen.width() / 2)) *
+            self.gauge_color_outer_radius_factor,
+            (((self.widget_diameter / 2) - (self.pen.width() / 2))
+             * self.gauge_color_inner_radius_factor),
+            self.scale_angle_start_value, self.scale_angle_size)
+        self.big_needle_center_point_polygon = self.create_polygon_pie(
+            ((self.widget_diameter / self.center_size) - (self.pen.width() / 2)),
+            0,
+            self.scale_angle_start_value, 360, False)
 
     # not sure what it does, helper method
     def change_value_needle_style(self, design):
@@ -174,13 +194,6 @@ class AnalogGaugeWidget(QWidget):
             if outline_pen_with > 0:
                 painter_filled_polygon.setPen(self.pen)
 
-            colored_scale_polygon = self.create_polygon_pie(
-                ((self.widget_diameter / 2) - (self.pen.width() / 2)) *
-                self.gauge_color_outer_radius_factor,
-                (((self.widget_diameter / 2) - (self.pen.width() / 2))
-                 * self.gauge_color_inner_radius_factor),
-                self.scale_angle_start_value, self.scale_angle_size)
-
             gauge_rect = QRect(QPoint(0, 0), QSize(
                 int(self.widget_diameter / 2 - 1), int(self.widget_diameter - 1)))
             grad = QConicalGradient(QPointF(0, 0), - self.scale_angle_size - self.scale_angle_start_value - 1)
@@ -197,7 +210,7 @@ class AnalogGaugeWidget(QWidget):
             # painter_filled_polygon.setBrush(self.brush)
             painter_filled_polygon.setBrush(grad)
 
-            painter_filled_polygon.drawPolygon(colored_scale_polygon)
+            painter_filled_polygon.drawPolygon(self.filled_polygon_polygon)
             # return painter_filled_polygon
 
     def draw_big_scaled_marker(self):
@@ -349,14 +362,6 @@ class AnalogGaugeWidget(QWidget):
         # diameter = diameter # self.widget_diameter/6
         # painter.drawEllipse(int(-diameter / 2), int(-diameter / 2), int(diameter), int(diameter))
 
-        # create_polygon_pie(self, outer_radius, inner_raduis, start, lenght)
-        colored_scale_polygon = self.create_polygon_pie(
-            ((self.widget_diameter / self.center_size) - (self.pen.width() / 2)),
-            0,
-            self.scale_angle_start_value, 360, False)
-
-        # 150.0 0.0 131 360
-
         grad = QConicalGradient(QPointF(0, 0), 0)
 
         # todo definition scale color as array here
@@ -370,7 +375,7 @@ class AnalogGaugeWidget(QWidget):
         # self.brush = QBrush(QColor(255, 0, 255, 255))
         # painter_filled_polygon.setBrush(self.brush)
 
-        painter.drawPolygon(colored_scale_polygon)
+        painter.drawPolygon(self.big_needle_center_point_polygon)
         # return painter_filled_polygon
 
     def draw_outer_circle(self, diameter=30):
@@ -379,10 +384,6 @@ class AnalogGaugeWidget(QWidget):
 
         painter.translate(self.width() / 2, self.height() / 2)
         painter.setPen(Qt.NoPen)
-        colored_scale_polygon = self.create_polygon_pie(
-            ((self.widget_diameter / 2) - (self.pen.width())),
-            (self.widget_diameter / self.center_hole_size),
-            self.scale_angle_start_value / 10, 360, False)
 
         radialGradient = QRadialGradient(QPointF(0, 0), self.width())
 
@@ -391,7 +392,7 @@ class AnalogGaugeWidget(QWidget):
 
         painter.setBrush(radialGradient)
 
-        painter.drawPolygon(colored_scale_polygon)
+        painter.drawPolygon(self.outer_circle_polygon)
 
     def draw_needle(self):
         painter = QPainter(self)
@@ -413,21 +414,23 @@ class AnalogGaugeWidget(QWidget):
     # rpm dial: 5-6ms, speed & lambda dial: 3ms
     def paintEvent(self, event):
         self.draw_outer_circle()
-        # colored pie area
+        # # colored pie area
         self.draw_filled_polygon()
 
-        # draw scale marker lines
+        # # draw scale marker lines
         self.create_fine_scaled_marker()
         self.draw_big_scaled_marker()
 
-        # draw scale marker value text
+        # # draw scale marker value text
         self.create_scale_marker_values_text()
 
-        # Display Value
+        # # Display Value
         self.create_values_text()
 
-        # draw needle 1
+        # # draw needle 1
         self.draw_needle()
 
-        # Draw Center Point
+        # # Draw Center Point
         self.draw_big_needle_center_point(diameter=(self.widget_diameter / 6))
+
+        pass
