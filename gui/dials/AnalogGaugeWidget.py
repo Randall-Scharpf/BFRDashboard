@@ -231,7 +231,7 @@ class AnalogGaugeWidget(QWidget):
         # Koordinatenursprung in die Mitte der Flaeche legen
         painter.translate(self.width() / 2, self.height() / 2)
         # painter.save()
-        font = QFont(self.scale_fontname, self.scale_fontsize, QFont.Bold)
+        font = QFont(self.scale_fontname, int(self.scale_fontsize), QFont.Bold)
         fm = QFontMetrics(font)
 
         pen_shadow = QPen()
@@ -256,7 +256,7 @@ class AnalogGaugeWidget(QWidget):
             w = fm.width(text) + 1
             h = fm.height()
             painter.setFont(QFont(self.scale_fontname,
-                            self.scale_fontsize, QFont.Bold))
+                            int(self.scale_fontsize), QFont.Bold))
             angle = angle_distance * i + \
                 float(self.scale_angle_start_value)
             x = text_radius * math.cos(math.radians(angle))
@@ -296,7 +296,7 @@ class AnalogGaugeWidget(QWidget):
         # painter.save()
         # xShadow = 3.0
         # yShadow = 3.0
-        font = QFont(self.value_fontname, self.value_fontsize, QFont.Bold)
+        font = QFont(self.value_fontname, int(self.value_fontsize), QFont.Bold)
         fm = QFontMetrics(font)
 
         pen_shadow = QPen()
@@ -317,7 +317,7 @@ class AnalogGaugeWidget(QWidget):
         w = fm.width(text) + 1
         h = fm.height()
         painter.setFont(QFont(self.value_fontname,
-                        self.value_fontsize, QFont.Bold))
+                        int(self.value_fontsize), QFont.Bold))
 
         # Mitte zwischen Skalenstart und Skalenende:
         # Skalenende = Skalenanfang - 360 + Skalenlaenge

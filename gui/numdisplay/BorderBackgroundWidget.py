@@ -12,4 +12,4 @@ class BorderBackgroundWidget(QWidget):
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(QPen(QColor(116, 116, 116, 255), 5, Qt.SolidLine))
         painter.drawRoundedRect(QRectF(0, 0, self.width(), self.height()), 40, 40)
-        painter.drawLine(0, self.height() / 2, self.width(), self.height() / 2)
+        painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)

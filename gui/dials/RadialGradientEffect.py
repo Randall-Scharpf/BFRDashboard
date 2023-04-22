@@ -25,7 +25,7 @@ class RadialGradientEffect(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setPen(Qt.NoPen)
-        radialGradient = QRadialGradient(QPoint(self.width() / 2, self.height() / 2), self.width() / 2)
+        radialGradient = QRadialGradient(QPoint(self.width() // 2, self.height() // 2), self.width() / 2)
         '''
         Min:
             radialGradient.setColorAt(0, QColor(139, 225, 242, 255))
