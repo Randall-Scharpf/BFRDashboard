@@ -20,13 +20,16 @@ class Dial(AnalogGaugeWidget):
         self.scale_angle_size = angle_size
         self.scale_fontsize = globalfonts.scaled_dial_size(scale_fontsize)
         self.value_fontsize = globalfonts.scaled_dial_size(value_fontsize)
+        self.obsolete = False
 
     def set_obsolete(self, obsolete):
         if obsolete:
             self.DisplayValueColor = QColor(170, 170, 170, 255)
         else:
             self.DisplayValueColor = QColor(206, 244, 255, 255)
-        self.update()
+        if obsolete ^ self.obsolete:
+            self.update()
+            self.obsolete = obsolete
 
 
 class RPMDial(Dial):

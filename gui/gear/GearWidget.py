@@ -23,6 +23,8 @@ class GearWidget(QWidget):
         self.gear.setGeometry(0, 85, WIDTH, 200)
         self.gear.setAlignment(Qt.AlignCenter)
 
+        self.obsolete = False
+
     def paintEvent(self, e):
         # paint the border
         painter = QPainter(self)
@@ -31,7 +33,8 @@ class GearWidget(QWidget):
         painter.drawRoundedRect(QRectF(0, 0, self.width(), self.height()), 40, 40)
 
     def set_obsolete(self, obsolete):
-        if obsolete:
+        if obsolete and not self.obsolete:
             self.gear.setStyleSheet(gf.FONT_CSS + gf.OBSOLETE_COLOR_CSS + gf.TRANSPARENT_CSS + gf.scaled_css_size(250))
-        else:
+        elif not obsolete and self.obsolete:
             self.gear.setStyleSheet(gf.FONT_CSS + gf.WHITE_CSS + gf.TRANSPARENT_CSS + gf.scaled_css_size(250))
+        self.obsolete = obsolete

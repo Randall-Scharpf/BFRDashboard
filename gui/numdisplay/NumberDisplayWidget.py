@@ -50,6 +50,8 @@ class NumberDisplayWidget(QWidget):
             self.unitLabel.setGeometry(174, 36, unit_width, 48)
         self.unitLabel.setAlignment(Qt.AlignCenter)
 
+        self.obsolete = False
+
     # called by main update loop to change number label's text
     def set_number(self, num):
         if self.allow_float:
@@ -73,7 +75,9 @@ class NumberDisplayWidget(QWidget):
             self.color_css = "color:rgba(170,170,170,255);"
         else:
             self.color_css = gf.WHITE_CSS
-        self.repaint_font()
+        if obsolete ^ self.obsolete:
+            self.repaint_font()
+            self.obsolete = obsolete
 
 
 class BatteryDisplay(NumberDisplayWidget):

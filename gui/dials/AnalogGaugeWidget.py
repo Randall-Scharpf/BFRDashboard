@@ -413,24 +413,26 @@ class AnalogGaugeWidget(QWidget):
     # paint event, called every main update loop, runs rather slow
     # rpm dial: 5-6ms, speed & lambda dial: 3ms
     def paintEvent(self, event):
+        # inside of the pie - removing this adds about 15fps on my laptop, when it's unplugged - randall
         self.draw_outer_circle()
-        # # colored pie area
+
+        # colored pie area - removing this adds about 10fps on my laptop, when it's unplugged - randall
         self.draw_filled_polygon()
 
-        # # draw scale marker lines
+        # draw scale marker lines
         self.create_fine_scaled_marker()
         self.draw_big_scaled_marker()
 
-        # # draw scale marker value text
+        # draw scale marker value text
         self.create_scale_marker_values_text()
 
-        # # Display Value
+        # Display Value
         self.create_values_text()
 
-        # # draw needle 1
+        # draw needle 1
         self.draw_needle()
 
-        # # Draw Center Point
+        # Draw Center Point - removing this adds about 5fps on my laptop, when it's unplugged - randall
         self.draw_big_needle_center_point(diameter=(self.widget_diameter / 6))
 
         pass
