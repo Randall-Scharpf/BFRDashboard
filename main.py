@@ -19,7 +19,7 @@ LOAD_UI_FROM_RES = True
 FULL_SCREEN = True
 
 # 1000 / interval = theoretical FPS cap
-UPDATE_LOOP_INTERVAL = 10
+UPDATE_LOOP_INTERVAL = 1
 
 # do throttle effect
 THROTTLE_EFFECT = False
@@ -37,6 +37,28 @@ DISCONNECTION_THRESHOLD = 1
 DATA_KEYS = ['acc_x', 'acc_y', 'acc_z', 'acc_magnitude', 'battery', 'brake', 'coolant', 'engine_speed', 'exhaust', 'fan1', 'fuel_pressure', 'fuel_pump', 'gear', 'ignition_timing',
 'injector_duty', 'intake', 'lambda1', 'lambda_target', 'log', 'lrt', 'map', 'mass_airflow', 'rotation_x',
 'rotation_y', 'rotation_z', 'sd_status', 'switch', 'throttle', 'unk', 've', 'vehicle_speed']
+
+DATA_UPDATE_RATE = {
+    'battery':[100, dt.now()],
+    'coolant':[100, dt.now()],
+    'engine_speed':[25, dt.now()],
+    'gear':[2.5, dt.now()],
+    'fuel_pressure':[25, dt.now()],
+    'lambda1':[25, dt.now()],
+    'vehicle_speed':[25, dt.now()],
+    'throttle':[100, dt.now()],
+    'log':[300, dt.now()]
+}
+
+def needs_update(key_name):
+    has_data = data_dict[key_name]['prev_update_ts'] != -1
+    delta = dt.now() - DATA_UPDATE_RATE[key_name][1]
+    delta = delta.microseconds + 1000000 * delta.seconds
+    delta /= 1000
+    if (has_data and (delta > DATA_UPDATE_RATE[key_name][0])):
+        DATA_UPDATE_RATE[key_name][1] = dt.now()
+        return True
+    return False
 
 # main data structure
 data_dict = {}
@@ -102,6 +124,7 @@ class MainWindow(QMainWindow):
         else:
             self.show()
         self.dm_log("Current screen width: " + str(self.frameGeometry().width()) + "x" + str(self.frameGeometry().height()))
+        self.last_fend_t = dt.now()
 
     # called by Receive thread
     @pyqtSlot(float, dict)
@@ -138,34 +161,35 @@ class MainWindow(QMainWindow):
             "",
             "Failed to retreieve time",
             traceback.format_exc())
+        # print("qt time: ", sys_dt_object - self.last_fend_t)
 
         try:
             # gui update to dashboard based on latest message data
-            if data_dict['battery']['prev_update_ts'] != -1:
+            if needs_update('battery'):
                 self.Battery.set_number(data_dict['battery']['value'])
                 self.Battery.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['battery']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if data_dict['coolant']['prev_update_ts'] != -1:
+            if needs_update('coolant'):
                 self.CoolantTemp.set_number(data_dict['coolant']['value'])
                 self.CoolantTemp.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['coolant']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if data_dict['engine_speed']['prev_update_ts'] != -1:
+            if needs_update('engine_speed'):
                 self.RPMDial.updateValue(data_dict['engine_speed']['value'])
                 self.RPMDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['engine_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if data_dict['gear']['prev_update_ts'] != -1:
+            if needs_update('gear'):
                 if data_dict['gear']['value'] == 0:
                     self.Gear.gear.setText("N")
                 else:
                     self.Gear.gear.setText(str(data_dict['gear']['value']))
                 self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['gear']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if data_dict['fuel_pressure']['prev_update_ts'] != -1:
+            if needs_update('fuel_pressure'):
                 self.Brake.set_number(data_dict['fuel_pressure']['value'])
                 self.Brake.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['fuel_pressure']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if data_dict['lambda1']['prev_update_ts'] != -1:
+            if needs_update('lambda1'):
                 self.LambdaDial.updateValue(data_dict['lambda1']['value'])
                 self.LambdaDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['lambda1']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if data_dict['vehicle_speed']['prev_update_ts'] != -1:
+            if needs_update('vehicle_speed'):
                 self.SpeedDial.updateValue(data_dict['vehicle_speed']['value'])
                 self.SpeedDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['vehicle_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if THROTTLE_EFFECT and data_dict['throttle']['prev_update_ts'] != -1:
+            if THROTTLE_EFFECT and needs_update('throttle'):
                 blur_ratio = min(1, max(0, data_dict['throttle']['value']))
                 self.RPMRadialGradient.blur_ratio = blur_ratio
                 self.LambdaRadialGradient.blur_ratio = blur_ratio
@@ -173,7 +197,7 @@ class MainWindow(QMainWindow):
                 self.RPMRadialGradient.update()
                 self.LambdaRadialGradient.update()
                 self.SpeedRadialGradient.update()
-            if data_dict['log']['prev_update_ts'] != -1:
+            if needs_update('log'):
                 self.LogLabel.setText("Log: " + str(data_dict['log']['value']))
         except Exception as e:
             self.handle_error(type(e).__name__,
@@ -187,8 +211,8 @@ class MainWindow(QMainWindow):
             elapsed_update_seconds = (sys_dt_object - self.prev_update_dt).total_seconds()
             self.ErrorBox.update_frame(elapsed_update_seconds)
             self.prev_update_dt = dt.now()
-            # update cuurent time in message time on dashboard
-            self.TimeLabel.setText(adjusted_dt_object.strftime(TIME_DISPLAY_FORMAT))
+            # (dont) update cuurent time in message time on dashboard
+            # self.TimeLabel.setText(adjusted_dt_object.strftime(TIME_DISPLAY_FORMAT))
             # determine can connection based on time of last message received
             disconnection_time = int((sys_dt_object - last_msg_dt).total_seconds())
             if disconnection_time >= DISCONNECTION_THRESHOLD:
@@ -206,7 +230,7 @@ class MainWindow(QMainWindow):
             # update FPS and MPS label
             if is_whole_update:
                 global msg_count
-                self.FPSLabel.setText("FPS: " + str(min(99, int(self.elapsed_updated_frames / elapsed_whole_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_whole_update_seconds))))
+                self.FPSLabel.setText("FPS: " + str(min(999, int(self.elapsed_updated_frames / elapsed_whole_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_whole_update_seconds))))
                 self.elapsed_updated_frames = 0
                 msg_count = 0
             self.elapsed_updated_frames += 1
@@ -258,6 +282,8 @@ class MainWindow(QMainWindow):
             "",
             "Failed to update data monitor",
             traceback.format_exc())
+        self.last_fend_t = dt.now()
+        # print("frame time:", self.last_fend_t - sys_dt_object)
 
     # called by toggle data monitor button or by Receive thread
     @pyqtSlot(bool)
