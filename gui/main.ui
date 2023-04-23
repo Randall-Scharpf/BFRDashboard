@@ -387,48 +387,6 @@ MPS: N</string>
      <string notr="true">background-color:rgba(0,0,0,0);</string>
     </property>
    </widget>
-   <widget class="RadialGradientEffect" name="RPMRadialGradient" native="true">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>270</y>
-      <width>700</width>
-      <height>700</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,0);</string>
-    </property>
-   </widget>
-   <widget class="RadialGradientEffect" name="SpeedRadialGradient" native="true">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>360</y>
-      <width>475</width>
-      <height>475</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,0);</string>
-    </property>
-   </widget>
-   <widget class="RadialGradientEffect" name="LambdaRadialGradient" native="true">
-    <property name="geometry">
-     <rect>
-      <x>715</x>
-      <y>360</y>
-      <width>475</width>
-      <height>475</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:rgba(0,0,0,0);</string>
-    </property>
-   </widget>
-   <zorder>RPMRadialGradient</zorder>
-   <zorder>SpeedRadialGradient</zorder>
-   <zorder>LambdaRadialGradient</zorder>
    <zorder>LeftNumBox</zorder>
    <zorder>SpeedDial</zorder>
    <zorder>LambdaDial</zorder>
