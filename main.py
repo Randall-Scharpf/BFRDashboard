@@ -13,13 +13,14 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import Qt, QFile, QTimer, QThreadPool, pyqtSignal, pyqtSlot
 import resources, globalfonts, sys, datetime, traceback
 
+from code_profiler import CodeProfiler
 
 # debugging constants, should be set to true in release
 LOAD_UI_FROM_RES = True
 FULL_SCREEN = True
 
 # 1000 / interval = theoretical FPS cap
-UPDATE_LOOP_INTERVAL = 1
+UPDATE_LOOP_INTERVAL = 10
 
 # do throttle effect
 THROTTLE_EFFECT = False
@@ -47,15 +48,16 @@ DATA_UPDATE_RATE = {
     'lambda1':[25, dt.now()],
     'vehicle_speed':[25, dt.now()],
     'throttle':[100, dt.now()],
-    'log':[300, dt.now()]
+    'log':[300, dt.now()],
+    'dmon_button':[300, dt.now()],
+    'error_handling':[1000, dt.now()]
 }
 
 def needs_update(key_name):
-    has_data = data_dict[key_name]['prev_update_ts'] != -1
     delta = dt.now() - DATA_UPDATE_RATE[key_name][1]
     delta = delta.microseconds + 1000000 * delta.seconds
     delta /= 1000
-    if (has_data and (delta > DATA_UPDATE_RATE[key_name][0])):
+    if (delta > DATA_UPDATE_RATE[key_name][0]):
         DATA_UPDATE_RATE[key_name][1] = dt.now()
         return True
     return False
@@ -124,7 +126,7 @@ class MainWindow(QMainWindow):
         else:
             self.show()
         self.dm_log("Current screen width: " + str(self.frameGeometry().width()) + "x" + str(self.frameGeometry().height()))
-        self.last_fend_t = dt.now()
+        self.code_profiler = CodeProfiler()
 
     # called by Receive thread
     @pyqtSlot(float, dict)
@@ -150,6 +152,7 @@ class MainWindow(QMainWindow):
             traceback.format_exc())
 
     def update_gui(self):
+        self.code_profiler.markStartOf("update_gui")
         try:
             # initialize time variables
             sys_dt_object = dt.now()
@@ -161,35 +164,42 @@ class MainWindow(QMainWindow):
             "",
             "Failed to retreieve time",
             traceback.format_exc())
-        # print("qt time: ", sys_dt_object - self.last_fend_t)
 
         try:
             # gui update to dashboard based on latest message data
-            if needs_update('battery'):
+            self.code_profiler.markStartOf("battery")
+            if needs_update('battery') and data_dict['battery']['prev_update_ts'] != -1:
                 self.Battery.set_number(data_dict['battery']['value'])
                 self.Battery.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['battery']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if needs_update('coolant'):
+            self.code_profiler.markTransitionFrom("battery", "coolant")
+            if needs_update('coolant') and data_dict['coolant']['prev_update_ts'] != -1:
                 self.CoolantTemp.set_number(data_dict['coolant']['value'])
                 self.CoolantTemp.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['coolant']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if needs_update('engine_speed'):
+            self.code_profiler.markTransitionFrom("coolant", "engine_speed")
+            if needs_update('engine_speed') and data_dict['engine_speed']['prev_update_ts'] != -1:
                 self.RPMDial.updateValue(data_dict['engine_speed']['value'])
                 self.RPMDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['engine_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if needs_update('gear'):
+            self.code_profiler.markTransitionFrom("engine_speed", "gear")
+            if needs_update('gear') and data_dict['gear']['prev_update_ts'] != -1:
                 if data_dict['gear']['value'] == 0:
                     self.Gear.gear.setText("N")
                 else:
                     self.Gear.gear.setText(str(data_dict['gear']['value']))
                 self.Gear.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['gear']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if needs_update('fuel_pressure'):
+            self.code_profiler.markTransitionFrom("gear", "fuel_pressure")
+            if needs_update('fuel_pressure') and data_dict['fuel_pressure']['prev_update_ts'] != -1:
                 self.Brake.set_number(data_dict['fuel_pressure']['value'])
                 self.Brake.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['fuel_pressure']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if needs_update('lambda1'):
+            self.code_profiler.markTransitionFrom("fuel_pressure", "lambda1")
+            if needs_update('lambda1') and data_dict['lambda1']['prev_update_ts'] != -1:
                 self.LambdaDial.updateValue(data_dict['lambda1']['value'])
                 self.LambdaDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['lambda1']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if needs_update('vehicle_speed'):
+            self.code_profiler.markTransitionFrom("lambda1", "vehicle_speed")
+            if needs_update('vehicle_speed') and data_dict['vehicle_speed']['prev_update_ts'] != -1:
                 self.SpeedDial.updateValue(data_dict['vehicle_speed']['value'])
                 self.SpeedDial.set_obsolete((adjusted_dt_object - dt.fromtimestamp(data_dict['vehicle_speed']['prev_update_ts'])).total_seconds() > OBSOLETE_THRESHOLD)
-            if THROTTLE_EFFECT and needs_update('throttle'):
+            self.code_profiler.markTransitionFrom("vehicle_speed", "throttle")
+            if THROTTLE_EFFECT and needs_update('throttle') and data_dict['throttle']['prev_update_ts'] != -1:
                 blur_ratio = min(1, max(0, data_dict['throttle']['value']))
                 self.RPMRadialGradient.blur_ratio = blur_ratio
                 self.LambdaRadialGradient.blur_ratio = blur_ratio
@@ -197,8 +207,10 @@ class MainWindow(QMainWindow):
                 self.RPMRadialGradient.update()
                 self.LambdaRadialGradient.update()
                 self.SpeedRadialGradient.update()
-            if needs_update('log'):
+            self.code_profiler.markTransitionFrom("throttle", "log")
+            if needs_update('log') and data_dict['log']['prev_update_ts'] != -1:
                 self.LogLabel.setText("Log: " + str(data_dict['log']['value']))
+            self.code_profiler.markEndOf("log")
         except Exception as e:
             self.handle_error(type(e).__name__,
             "Error at update_gui() section 2 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),
@@ -207,44 +219,50 @@ class MainWindow(QMainWindow):
             traceback.format_exc())
 
         try:
-            # give error box a chance to update itself
-            elapsed_update_seconds = (sys_dt_object - self.prev_update_dt).total_seconds()
-            self.ErrorBox.update_frame(elapsed_update_seconds)
-            self.prev_update_dt = dt.now()
-            # (dont) update cuurent time in message time on dashboard
-            # self.TimeLabel.setText(adjusted_dt_object.strftime(TIME_DISPLAY_FORMAT))
-            # determine can connection based on time of last message received
-            disconnection_time = int((sys_dt_object - last_msg_dt).total_seconds())
-            if disconnection_time >= DISCONNECTION_THRESHOLD:
-                self.CANConnectionLabel.setText('No Connection (' + str(min(99, disconnection_time)) + ')')
-                self.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + 'color: red;' + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
-            else:
-                self.CANConnectionLabel.setText('Connected')
-                self.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + 'color: green;' + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
-            # determine if this update call is on a whole second (called once per second)
-            elapsed_whole_update_seconds = (sys_dt_object - self.prev_whole_update_dt).total_seconds()
-            is_whole_update = elapsed_whole_update_seconds > 1
-            if is_whole_update:
-                self.prev_whole_update_dt = 0
-                self.prev_whole_update_dt = dt.now()
-            # update FPS and MPS label
-            if is_whole_update:
-                global msg_count
-                self.FPSLabel.setText("FPS: " + str(min(999, int(self.elapsed_updated_frames / elapsed_whole_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_whole_update_seconds))))
-                self.elapsed_updated_frames = 0
-                msg_count = 0
+            self.code_profiler.markStartOf("error handling, fps monitor, etc")
             self.elapsed_updated_frames += 1
-            # check sd status
-            if data_dict['sd_status']['prev_update_ts'] != -1 and data_dict['sd_status']['value'] == 0:
-                self.handle_error('SD Status',
-                "Error at update_gui() section 3 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),
-                "sd_status=" + str(data_dict['sd_status']['value']),
-                "SD Status not 0",
-                traceback.format_exc())
-            # check if switch is flipped
-            if data_dict['switch']['value'] == 0:
-                self.on_toggle_data_monitor(False)
-                data_dict['switch']['value'] = None
+            if (needs_update('error_handling')):
+                # give error box a chance to update itself
+                elapsed_update_seconds = (sys_dt_object - self.prev_update_dt).total_seconds()
+                self.ErrorBox.update_frame(elapsed_update_seconds)
+                self.prev_update_dt = dt.now()
+                # (dont) update cuurent time in message time on dashboard
+                # self.TimeLabel.setText(adjusted_dt_object.strftime(TIME_DISPLAY_FORMAT))
+                # determine can connection based on time of last message received
+                disconnection_time = int((sys_dt_object - last_msg_dt).total_seconds())
+                if disconnection_time >= DISCONNECTION_THRESHOLD:
+                    self.CANConnectionLabel.setText('No Connection (' + str(min(99, disconnection_time)) + ')')
+                    self.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + 'color: red;' + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
+                else:
+                    self.CANConnectionLabel.setText('Connected')
+                    self.CANStatusLabel.setStyleSheet(globalfonts.FONT_CSS + 'color: green;' + globalfonts.TRANSPARENT_CSS + globalfonts.scaled_css_size(25))
+                # determine if this update call is on a whole second (called once per second)
+                elapsed_whole_update_seconds = (sys_dt_object - self.prev_whole_update_dt).total_seconds()
+                is_whole_update = elapsed_whole_update_seconds > 1
+                if is_whole_update:
+                    self.prev_whole_update_dt = 0
+                    self.prev_whole_update_dt = dt.now()
+                # update FPS and MPS label
+                if is_whole_update:
+                    global msg_count
+                    self.FPSLabel.setText("FPS: " + str(min(999, int(self.elapsed_updated_frames / elapsed_whole_update_seconds))) + "\nMPS: " + str(min(9999, int(msg_count / elapsed_whole_update_seconds))))
+                    self.elapsed_updated_frames = 0
+                    msg_count = 0
+                # check sd status
+                if data_dict['sd_status']['prev_update_ts'] != -1 and data_dict['sd_status']['value'] == 0:
+                    self.handle_error('SD Status',
+                    "Error at update_gui() section 3 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),
+                    "sd_status=" + str(data_dict['sd_status']['value']),
+                    "SD Status not 0",
+                    traceback.format_exc())
+            self.code_profiler.markEndOf("error handling, fps monitor, etc")
+            self.code_profiler.markStartOf("data monitor switch")
+            if (needs_update('dmon_button')):
+                # check if switch is flipped
+                if data_dict['switch']['value'] == 0:
+                    self.on_toggle_data_monitor(False)
+                    data_dict['switch']['value'] = None
+                self.code_profiler.markEndOf("data monitor switch")
         except Exception as e:
             self.handle_error(type(e).__name__,
             "Error at update_gui() section 3 at ST " + str(dt.now()) + " or " + str(dt.now() + dt_offset),
@@ -252,6 +270,7 @@ class MainWindow(QMainWindow):
             "Failed to update misc gui",
             traceback.format_exc())
 
+        self.code_profiler.markStartOf("data monitor")
         try:
             # Data Monitor gui updates
             if self.DataMonitor.isVisible():
@@ -282,8 +301,11 @@ class MainWindow(QMainWindow):
             "",
             "Failed to update data monitor",
             traceback.format_exc())
-        self.last_fend_t = dt.now()
-        # print("frame time:", self.last_fend_t - sys_dt_object)
+        self.code_profiler.markEndOf("data monitor")
+        self.code_profiler.markStartOf("just a code profile")
+        self.code_profiler.markEndOf("just a code profile")
+        self.code_profiler.markEndOf("update_gui")
+        self.code_profiler.logTaskTimes(100)
 
     # called by toggle data monitor button or by Receive thread
     @pyqtSlot(bool)
